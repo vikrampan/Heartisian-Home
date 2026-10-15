@@ -206,6 +206,16 @@
     text-shadow: 0 1px 2px rgb(0 0 0 / 0.65);
   }
 
+  /* lime-filled lettering cut into brick: shadow on the upper lip of the cut, light catching the lower edge */
+  .carved {
+    color: #f4e7d3;
+    text-shadow:
+      0 -1px 0 rgb(48 18 6 / 0.6),
+      0 1px 0 rgb(255 226 190 / 0.25),
+      0 0 3px rgb(30 10 4 / 0.45),
+      0 2px 12px rgb(30 10 4 / 0.5);
+  }
+
   .no-scrollbar {
     scrollbar-width: none;
   }

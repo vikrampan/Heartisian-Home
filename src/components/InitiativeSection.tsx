@@ -51,8 +51,19 @@ export default function InitiativeSection() {
         </Reveal>
 
         <Reveal delay={250} className="relative -mx-6 md:-mx-10 lg:mx-0">
-          <div className="relative overflow-hidden lg:rounded-sm lg:shadow-[0_18px_40px_-24px_rgb(43_38_32/0.6)]">
-            <Photo media="initiative" labelPosition="top-right" className="aspect-[5/7] w-full sm:aspect-[4/3] lg:aspect-[9/10]" />
+          {/* the frame sets the shape; the photo is cropped into it, keeping the main block stack in view */}
+          <div className="relative aspect-[5/7] overflow-hidden sm:aspect-[4/3] lg:aspect-[9/10] lg:rounded-sm lg:shadow-[0_18px_40px_-24px_rgb(43_38_32/0.6)]">
+            <Photo
+              media="initiative"
+              labelPosition="top-right"
+              sizes="(min-width: 1280px) 364px, (min-width: 1024px) 28vw, 100vw"
+              className="absolute inset-0 h-full w-full object-[50%_28%]"
+            />
+            {/* warm shade behind the handwritten line so it reads over the sunlit blocks */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_70%_at_100%_100%,rgb(30_16_6/0.62),transparent_68%)] lg:hidden"
+            />
             <TornEdge placement="top-inside" className="text-paper lg:hidden" />
             <TornEdge placement="bottom-inside" className="text-paper" />
             <p className="script pointer-events-none absolute bottom-14 right-8 -rotate-6 text-[1.9rem] leading-[1.45] text-paper drop-shadow-[0_2px_8px_rgb(0_0_0/0.5)] lg:hidden">

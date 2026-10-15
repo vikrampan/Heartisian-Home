@@ -15,7 +15,12 @@ const slot = (label: string, tone: Tone, src?: string, srcSet?: string): MediaSl
 
 export const MEDIA = {
   hero: slot('Hands pressing an earth block', 'earth'),
-  initiative: slot('Stacked CSEB blocks', 'clay'),
+  initiative: slot(
+    'Stacked compressed earth blocks in warm sunlight',
+    'clay',
+    '/images/initiative/blocks-1024.webp',
+    '/images/initiative/blocks-640.webp 640w, /images/initiative/blocks-1024.webp 1024w',
+  ),
   cseb: slot('CSEB block', 'clay'),
   limeCseb: slot('Lime-stabilised CSEB', 'lime'),
   limeMortar: slot('Lime mortar', 'stone'),
@@ -32,7 +37,6 @@ export const MEDIA = {
   places: slot('Places — landscape and lake', 'lake'),
   purpose: slot('Purpose — sapling in earthen hands', 'earth'),
   build: slot('Earthen wall, doorway and plants', 'clay'),
-  footer: slot('Rammed-earth landscape', 'dusk'),
 }
 
 export type MediaKey = keyof typeof MEDIA
