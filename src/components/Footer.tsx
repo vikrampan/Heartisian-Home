@@ -1,5 +1,4 @@
 import { Fragment } from 'react'
-import TornEdge from './TornEdge'
 import { LogoMark } from './art'
 import { NAV } from '../data/content'
 
@@ -25,10 +24,11 @@ export default function Footer() {
         />
       </picture>
 
-      {/* darkens the wall so the handwriting reads, and eases out of the dark section above */}
+      {/* darkens the wall so the handwriting reads; it starts from the solid colour the Build section ends on,
+          so the two photos join without a line */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(24_16_10/0.72)_0%,rgb(24_16_10/0.48)_19%,rgb(24_16_10/0)_33%)] lg:bg-[linear-gradient(180deg,rgb(24_16_10/0.72)_0%,rgb(24_16_10/0.48)_13%,rgb(24_16_10/0)_25%)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(24_16_10)_0%,rgb(24_16_10/0.8)_6%,rgb(24_16_10/0.5)_19%,rgb(24_16_10/0)_33%)] lg:bg-[linear-gradient(180deg,rgb(24_16_10)_0%,rgb(24_16_10/0.8)_5%,rgb(24_16_10/0.5)_13%,rgb(24_16_10/0)_25%)]"
       />
       {/* a patch of sunlight on the floor behind the small print */}
       <div
@@ -40,7 +40,6 @@ export default function Footer() {
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-[radial-gradient(80%_20%_at_50%_51.5%,rgb(36_14_6/0.3),rgb(36_14_6/0.16)_60%,transparent_100%)] lg:bg-[radial-gradient(34%_19%_at_50%_52%,rgb(36_14_6/0.34),rgb(36_14_6/0.18)_60%,transparent_100%)]"
       />
-      <TornEdge placement="top-inside" />
 
       {/* full width on purpose: the rows must track the photo, which always spans the whole screen */}
       <div className="grid h-[46rem] grid-rows-[32fr_2.5fr_33.5fr_32fr] px-6 text-center md:px-10 lg:aspect-[2.6/1] lg:h-auto lg:max-h-[48rem] lg:grid-rows-[23.7fr_3.6fr_49fr_23.7fr]">

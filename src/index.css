@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Desktop screens wide enough for the hero photo to show the brick wall right of the trowel
+   (squarer screens crop it away, so "Watch Our Story" moves under the hero text instead). */
+@custom-variant hero-wide {
+  @media (min-width: 80rem) and (min-aspect-ratio: 5/3) {
+    @slot;
+  }
+}
+
 @theme {
   /* brand palette */
   --color-terracotta: #9f5738;
@@ -38,9 +46,17 @@
     scroll-behavior: smooth;
   }
 
+  /* clears the scrolled header bar (4rem phones, 4.5rem tablets and up) when jumping to a section */
   section[id],
   footer[id] {
     scroll-margin-top: 4.5rem;
+  }
+
+  @media (min-width: 768px) {
+    section[id],
+    footer[id] {
+      scroll-margin-top: 5rem;
+    }
   }
 
   body {
@@ -89,7 +105,7 @@
 
   .heading-hero {
     font-family: var(--font-display);
-    font-size: clamp(3.4rem, 6.4vw + 1rem, 6.75rem);
+    font-size: clamp(3.4rem, 6.4vw + 1.25rem, 7rem);
     line-height: 1.02;
     letter-spacing: -0.01em;
   }
@@ -133,11 +149,13 @@
   }
 
   /* ---- surfaces ---- */
+  /* Both glows fade out before the section's top and bottom edges, so stacked paper sections join
+     without a visible line. */
   .paper {
     background-color: var(--color-paper);
     background-image:
       radial-gradient(90% 60% at 30% 50%, rgb(255 255 255 / 0.45), transparent 70%),
-      radial-gradient(70% 60% at 100% 100%, rgb(190 182 169 / 0.3), transparent 70%),
+      radial-gradient(60% 45% at 100% 55%, rgb(190 182 169 / 0.28), transparent 70%),
       var(--noise);
   }
 
@@ -180,30 +198,61 @@
     }
   }
 
-  /* ---- carved beam (see Beam.tsx for the geometry) ---- */
-  .beam-scope {
-    --beam-h: 128px;
+  /* hero photo shades, measured from the design mockup (photo vs. mockup, pixel by pixel).
+     phones: the photo darkens towards the bottom, under the stacked text.
+     desktop: dark on the left behind the title, a soft top for the navigation, a pool of shade on the
+     bricks behind "Watch Our Story", and gentle bottom corners. */
+  .hero-shade {
+    --shade: 22 13 7;
+    background-image: linear-gradient(
+      180deg,
+      rgb(var(--shade) / 0.5) 0%,
+      rgb(var(--shade) / 0.12) 16%,
+      rgb(var(--shade) / 0.55) 36%,
+      rgb(var(--shade) / 0.78) 58%,
+      rgb(var(--shade) / 0.9) 100%
+    );
   }
 
-  @media (min-width: 768px) {
-    .beam-scope {
-      --beam-h: 140px;
+  @media (min-width: 1024px) {
+    .hero-shade {
+      background-image:
+        linear-gradient(
+          90deg,
+          rgb(var(--shade) / 0.8) 0%,
+          rgb(var(--shade) / 0.74) 20%,
+          rgb(var(--shade) / 0.6) 31%,
+          rgb(var(--shade) / 0.42) 38%,
+          rgb(var(--shade) / 0.16) 45%,
+          rgb(var(--shade) / 0.06) 53%,
+          transparent 62%
+        ),
+        linear-gradient(180deg, rgb(var(--shade) / 0.5) 0%, rgb(var(--shade) / 0.28) 13%, transparent 28%),
+        radial-gradient(22% 24% at 86% 63%, rgb(var(--shade) / 0.55), transparent),
+        radial-gradient(40% 42% at 100% 100%, rgb(var(--shade) / 0.45), transparent),
+        linear-gradient(0deg, rgb(var(--shade) / 0.3) 0%, transparent 20%);
     }
   }
 
-  .beam-bar {
-    position: absolute;
-    inset-inline: 0;
-    top: calc(var(--beam-h) * 0.0787);
-    height: calc(var(--beam-h) * 0.3738);
-    padding-inline: calc(var(--beam-h) * 0.623 + 4px);
-    display: flex;
-    align-items: center;
+  /* warm earth panel behind the Build section text (colours sampled from the mockups) */
+  .earth {
+    background-color: #7d5030;
+    background-image:
+      var(--noise-light),
+      linear-gradient(160deg, #93633c 0%, #7d5030 42%, #5e3b22 100%);
   }
 
-  .on-wood {
-    color: #f6ead6;
-    text-shadow: 0 1px 2px rgb(0 0 0 / 0.65);
+  /* the path photo dissolves into the earth panel: from its top edge on phones, from the left on desktop */
+  .build-photo {
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 42%);
+    mask-image: linear-gradient(180deg, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 42%);
+  }
+
+  @media (min-width: 1024px) {
+    .build-photo {
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 46%);
+      mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 46%);
+    }
   }
 
   /* lime-filled lettering cut into brick: shadow on the upper lip of the cut, light catching the lower edge */

@@ -2,7 +2,6 @@ import Button from './Button'
 import Photo from './Photo'
 import Reveal from './Reveal'
 import SectionIntro from './SectionIntro'
-import TornEdge from './TornEdge'
 
 export default function KSVSection() {
   return (
@@ -28,8 +27,6 @@ export default function KSVSection() {
             sizes="(min-width: 1024px) 58vw, 100vw"
             className="absolute inset-0 h-full w-full object-[50%_45%]"
           />
-          <TornEdge placement="top-inside" />
-          <TornEdge placement="bottom-inside" />
         </div>
 
         <Reveal
@@ -41,9 +38,10 @@ export default function KSVSection() {
             evolve.”
           </p>
           <Button
-            href="#ksv"
+            href="https://heartfulness.org/kanha/"
+            external
             variant="outline"
-            className="mt-8 h-16 w-full max-w-[16.5rem] justify-between! rounded-full px-8 lg:h-11 lg:w-auto lg:justify-center! lg:rounded-sm lg:px-6"
+            className="mt-8 h-14 rounded-full px-8 lg:h-12 lg:px-7"
           >
             Explore KSV
           </Button>

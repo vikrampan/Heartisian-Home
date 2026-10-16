@@ -1,6 +1,5 @@
 import LineIcon from './lineIcons'
 import { LogoMark } from './art'
-import { IconArrow } from './icons'
 import { JOURNEY_STEPS } from '../data/content'
 
 const CIRCLE = 'flex shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#f2e3cd,#d6b893)] text-ink shadow-[inset_0_-6px_14px_rgb(120_80_40/0.18)]'
@@ -17,7 +16,8 @@ export function ScaleDiagramDesktop() {
       <ol className="grid grid-cols-4 gap-7">
         {JOURNEY_STEPS.map((step, index) => (
           <li key={step.title} className="relative">
-            {index > 0 && <IconArrow className="absolute -left-6 top-9 h-5 w-5 text-ink/70" />}
+            {/* a thread between the steps, level with the circles */}
+            {index > 0 && <span aria-hidden="true" className="absolute -left-7 top-14 h-px w-7 bg-ink/30" />}
             <div className="flex h-full flex-col items-center rounded-lg bg-white/35 px-3 pb-6 pt-5 text-center">
               <span className={`${CIRCLE} h-[4.5rem] w-[4.5rem]`}>
                 <LineIcon name={step.icon} className="h-9 w-9" />
@@ -66,8 +66,9 @@ export function ScaleDiagramMobile() {
           <LogoMark className="h-11 w-11" />
           Heartisan Home
         </span>
-        <span aria-hidden="true" className="relative mb-6 h-px flex-1 bg-ink/50">
-          <IconArrow className="absolute -right-1 -top-[9px] h-[19px] w-[19px]" />
+        <span aria-hidden="true" className="relative mb-6 h-px flex-1 bg-ink/40">
+          <span className="absolute -left-1 -top-[3px] h-[7px] w-[7px] rounded-full bg-ink/60" />
+          <span className="absolute -right-1 -top-[3px] h-[7px] w-[7px] rounded-full bg-ink/60" />
         </span>
         <span className="sr-only">leads to</span>
         <span className="flex flex-col items-center gap-2 text-center">

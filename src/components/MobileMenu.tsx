@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { useDialog } from '../hooks/useDialog'
-import { IconArrow, IconClose } from './icons'
+import { IconClose } from './icons'
 import { NAV } from '../data/content'
 
 interface MobileMenuProps {
@@ -104,10 +104,9 @@ export default function MobileMenu({ open, activeNav, onClose }: MobileMenuProps
               <a
                 href="#footer"
                 onClick={onClose}
-                className="group inline-flex h-11 items-center gap-5 rounded-full bg-paper pl-6 pr-5 font-display text-base text-ink shadow-[0_8px_24px_-10px_rgb(0_0_0/0.55)] transition-colors hover:bg-white"
+                className="inline-flex h-11 items-center rounded-full bg-paper px-6 font-display text-base text-ink shadow-[0_8px_24px_-10px_rgb(0_0_0/0.55)] transition-colors hover:bg-white"
               >
                 Get Involved
-                <IconArrow className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </div>
           </div>

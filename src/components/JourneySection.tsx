@@ -1,4 +1,3 @@
-import Button from './Button'
 import Reveal from './Reveal'
 import SectionIntro from './SectionIntro'
 import { ScaleDiagramDesktop, ScaleDiagramMobile } from './ScaleDiagram'
@@ -24,27 +23,12 @@ export default function JourneySection() {
             construction initiative working to take these approaches forward into larger-scale construction and
             infrastructure.
           </p>
-          <Button
-            href="#build"
-            variant="outline"
-            className="mt-8 hidden h-11 rounded-sm px-6 lg:inline-flex"
-          >
-            The Larger Journey
-          </Button>
         </Reveal>
 
         <Reveal delay={150}>
           <ScaleDiagramDesktop />
           <ScaleDiagramMobile />
         </Reveal>
-
-        <Button
-          href="#build"
-          variant="outline"
-          className="h-16 w-full max-w-[16.5rem] justify-between! rounded-full px-8 lg:hidden"
-        >
-          The Larger Journey
-        </Button>
       </div>
     </section>
   )

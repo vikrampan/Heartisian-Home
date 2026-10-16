@@ -7,7 +7,7 @@ export default function DifferenceSection() {
     <section id="difference" className="paper relative overflow-hidden pb-20 pt-10 lg:pb-28 lg:pt-16">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(45%_70%_at_92%_25%,rgb(255_255_255/0.55),transparent_70%)] lg:block"
+        className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(45%_55%_at_92%_45%,rgb(255_255_255/0.55),transparent_70%)] lg:block"
       />
 
       <div className="container-site relative">

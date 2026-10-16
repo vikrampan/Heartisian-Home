@@ -2,18 +2,11 @@ type IconProps = { className?: string }
 
 const line = { fill: 'none', stroke: 'currentColor', strokeLinecap: 'round', strokeLinejoin: 'round' } as const
 
-export function IconArrow({ className }: IconProps) {
+// marks the one link that leaves the page
+export function IconExternal({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <path d="M4 12h15M13 6l6 6-6 6" {...line} strokeWidth="1.6" />
-    </svg>
-  )
-}
-
-export function IconArrowDown({ className }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <path d="M12 3v17M7 15l5 5 5-5" {...line} strokeWidth="1.4" />
+      <path d="M7 17L17 7M9 7h8v8" {...line} strokeWidth="1.6" />
     </svg>
   )
 }

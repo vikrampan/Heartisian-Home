@@ -1,15 +1,11 @@
-import Button from './Button'
 import Photo from './Photo'
 import Reveal from './Reveal'
 import SectionIntro from './SectionIntro'
-import TornEdge from './TornEdge'
 import { Stamp } from './art'
 
 export default function InitiativeSection() {
   return (
     <section id="initiative" className="paper relative z-10 pb-16 pt-14 lg:py-24">
-      <TornEdge />
-
       <div className="container-site grid items-center gap-10 lg:grid-cols-[1.25fr_0.5fr_0.9fr] lg:gap-12">
         <Reveal>
           <SectionIntro
@@ -30,9 +26,6 @@ export default function InitiativeSection() {
               skilled and unskilled workers to learn, experiment and build.
             </p>
           </div>
-          <Button href="#craft" className="mt-8 hidden h-11 rounded-md px-6 lg:inline-flex">
-            Know More
-          </Button>
         </Reveal>
 
         <Reveal delay={150} className="relative hidden flex-col items-center lg:flex">
@@ -64,8 +57,6 @@ export default function InitiativeSection() {
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_70%_at_100%_100%,rgb(30_16_6/0.62),transparent_68%)] lg:hidden"
             />
-            <TornEdge placement="top-inside" className="text-paper lg:hidden" />
-            <TornEdge placement="bottom-inside" className="text-paper" />
             <p className="script pointer-events-none absolute bottom-14 right-8 -rotate-6 text-[1.9rem] leading-[1.45] text-paper drop-shadow-[0_2px_8px_rgb(0_0_0/0.5)] lg:hidden">
               Hands
               <br />
@@ -76,10 +67,6 @@ export default function InitiativeSection() {
             </p>
           </div>
         </Reveal>
-
-        <Button href="#craft" className="h-16 w-full max-w-[18.5rem] justify-between! rounded-full px-8 lg:hidden">
-          Know More
-        </Button>
       </div>
     </section>
   )

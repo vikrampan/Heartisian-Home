@@ -1,6 +1,5 @@
 import Photo from './Photo'
 import Reveal from './Reveal'
-import TornEdge from './TornEdge'
 import { IconPlay } from './icons'
 
 interface StorySectionProps {
@@ -10,8 +9,6 @@ interface StorySectionProps {
 export default function StorySection({ onPlayVideo }: StorySectionProps) {
   return (
     <section id="story" className="paper relative z-10 pb-20 pt-14 lg:py-28">
-      <TornEdge />
-
       <div className="container-site grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
         <Reveal>
           <p className="eyebrow text-muted">Our Story</p>
@@ -39,8 +36,8 @@ export default function StorySection({ onPlayVideo }: StorySectionProps) {
             aria-label="Watch our story — 13 minute film"
             className="group relative block w-full overflow-hidden rounded-lg"
           >
-            <Photo media="story" labelPosition="top-right" className="aspect-[6/5] w-full lg:aspect-[16/11]" />
-            <span className="absolute inset-0 bg-black/15 transition-colors duration-500 group-hover:bg-black/25" />
+            <Photo media="story" className="aspect-[6/5] w-full object-[50%_45%] transition-transform duration-[1.6s] ease-[var(--ease-soft)] group-hover:scale-[1.03] lg:aspect-[16/11]" />
+            <span className="absolute inset-0 bg-[rgb(30_18_10/0.22)] transition-colors duration-500 group-hover:bg-[rgb(30_18_10/0.32)]" />
             <span className="absolute left-1/2 top-1/2 flex h-[4.5rem] w-[4.5rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-paper/90 text-paper transition-transform duration-500 group-hover:scale-110 lg:h-24 lg:w-24">
               <IconPlay className="ml-1 h-7 w-7 lg:h-9 lg:w-9" />
             </span>

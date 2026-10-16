@@ -32,6 +32,8 @@ export const TECHNIQUES = [
   { id: 'limePlaster', name: 'Lime plaster', description: 'Breathable walls. Healthier spaces.' },
 ] as const
 
+export type TechniqueId = (typeof TECHNIQUES)[number]['id']
+
 export const PILLARS = [
   { icon: 'sprout', title: 'Ecology', description: 'Building with natural and locally appropriate materials.' },
   {
@@ -55,7 +57,7 @@ export const JOURNEY_STEPS = [
 ] as const
 
 export const PEOPLE_CARDS = [
-  { id: 'people', title: 'People', subtitle: 'The hands behind the homes.', href: '#initiative' },
-  { id: 'places', title: 'Places', subtitle: 'Inspired by the land, shaped by its stories.', href: '#ksv' },
-  { id: 'purpose', title: 'Purpose', subtitle: 'A kinder tomorrow for generations.', href: '#build' },
+  { id: 'people', title: 'People', subtitle: 'The hands behind the homes.' },
+  { id: 'places', title: 'Places', subtitle: 'Inspired by the land, shaped by its stories.' },
+  { id: 'purpose', title: 'Purpose', subtitle: 'We collaborate with Nature.' },
 ] as const
