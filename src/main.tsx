@@ -10,5 +10,11 @@ const requested = new URLSearchParams(window.location.search).get('page')
 const basic = requested ? requested === 'basic' : BASIC_HOSTS.includes(window.location.hostname)
 
 const root = createRoot(document.getElementById('root')!)
-const load = basic ? import('./basic/main') : import('./site/main')
-load.then(({ mount }) => mount(root))
+
+// Two separate import() calls on purpose: the production build attaches each page's stylesheet to its own call,
+// and folding them into one expression (`basic ? import(a) : import(b)`) made both pages load the full site's styles.
+if (basic) {
+  import('./basic/main').then(({ mount }) => mount(root))
+} else {
+  import('./site/main').then(({ mount }) => mount(root))
+}
