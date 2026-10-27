@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { FILM } from './film'
+import { FILM } from '../film'
 
 type Source = { kind: 'none' } | { kind: 'embed'; src: string } | { kind: 'file' }
 
@@ -153,15 +153,12 @@ function FilePlayer() {
 
 // ---- the frame ----
 
+// Used by both pages; each one sets the frame's width, corners and shadow through `className`.
 export default function FilmPlayer({ className = '' }: { className?: string }) {
   const source = resolve(FILM.url)
 
   return (
-    // Sized by the screen's height as well as its width: on laptops the whole film is in view along with the title,
-    // and on a phone held sideways it fills the screen.
-    <div
-      className={`relative mx-auto aspect-video w-[min(100%,calc(100svh*16/9))] overflow-hidden md:w-[min(100%,max(40rem,calc((100svh-24rem)*16/9)))] phone-landscape:w-[min(100%,calc(100svh*16/9))] bg-[#0e0b08] md:rounded-xl md:shadow-[0_30px_80px_-30px_rgb(0_0_0/0.8)] phone-landscape:rounded-none ${className}`}
-    >
+    <div className={`relative mx-auto aspect-video overflow-hidden bg-[#0e0b08] text-paper ${className}`}>
       {source.kind === 'embed' && (
         <iframe
           src={source.src}
