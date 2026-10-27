@@ -1,58 +1,36 @@
-import { useCallback, useState } from 'react'
-import Header from './components/Header'
-import MobileMenu from './components/MobileMenu'
-import Hero from './components/Hero'
-import InitiativeSection from './components/InitiativeSection'
-import CraftSection from './components/CraftSection'
-import StorySection from './components/StorySection'
-import DifferenceSection from './components/DifferenceSection'
-import KSVSection from './components/KSVSection'
-import JourneySection from './components/JourneySection'
-import PeopleSection from './components/PeopleSection'
-import BuildSection from './components/BuildSection'
-import Footer from './components/Footer'
-import VideoModal from './components/VideoModal'
-import { useActiveSection } from './hooks/useActiveSection'
-import { SECTIONS, SECTION_IDS } from './data/content'
+import FilmPlayer from './FilmPlayer'
+import { FILM } from './film'
 
+// A single-purpose page: the 13 minute film. On a phone held sideways, everything but the film steps aside.
 export default function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [videoOpen, setVideoOpen] = useState(false)
-  const activeId = useActiveSection(SECTION_IDS)
-  const activeNav = SECTIONS.find((section) => section.id === activeId)?.nav ?? 0
-
-  const openMenu = useCallback(() => setMenuOpen(true), [])
-  const closeMenu = useCallback(() => setMenuOpen(false), [])
-  const openVideo = useCallback(() => setVideoOpen(true), [])
-  const closeVideo = useCallback(() => setVideoOpen(false), [])
-
   return (
-    <>
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-paper focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-ink"
-      >
-        Skip to content
-      </a>
+    <div className="flex min-h-svh flex-col">
+      <header className="px-5 pt-6 text-center md:pt-7 phone-landscape:hidden">
+        <p className="text-[0.8125rem] font-semibold uppercase tracking-[0.22em]">Heartisan Home</p>
+        <p className="mt-1.5 text-xs text-paper/65">Building with Earth. Learning with the Heart.</p>
+      </header>
 
-      <Header activeNav={activeNav} menuOpen={menuOpen} onMenuOpen={openMenu} />
-      <MobileMenu open={menuOpen} activeNav={activeNav} onClose={closeMenu} />
+      <main className="flex flex-1 flex-col justify-center py-10 md:px-10 phone-landscape:py-0">
+        <div className="mx-auto w-full max-w-5xl">
+          <div className="px-5 text-center phone-landscape:hidden">
+            <p className="eyebrow text-clay">Our Story · {FILM.minutes} minute film</p>
+            <h1 className="mt-4 font-display text-[clamp(2.1rem,7vw,3.4rem)] leading-[1.1]">The Heart Behind Our Homes.</h1>
+            <p className="mx-auto mt-4 max-w-md text-[1.0625rem] leading-relaxed text-paper/80">
+              A {FILM.minutes} minute film that takes you through our philosophy, process, people and the places that
+              inspire us.
+            </p>
+          </div>
 
-      <main id="main">
-        <Hero onPlayVideo={openVideo} />
-        <InitiativeSection />
-        <CraftSection />
-        <StorySection onPlayVideo={openVideo} />
-        <DifferenceSection />
-        <KSVSection />
-        <JourneySection />
-        <PeopleSection />
-        <BuildSection />
+          {/* edge to edge on phones, so the film is as large as the screen allows */}
+          <FilmPlayer className="mt-8 md:mt-9 phone-landscape:mt-0" />
+
+          <p className="mt-5 px-5 text-center text-sm text-paper/60 phone-landscape:hidden">Best watched with the sound on.</p>
+        </div>
       </main>
 
-      <Footer />
-
-      <VideoModal open={videoOpen} onClose={closeVideo} />
-    </>
+      <footer className="px-5 pb-6 text-center text-xs text-paper/45 phone-landscape:hidden">
+        &copy; {new Date().getFullYear()} Heartisan Home · Kanha Shanti Vanam
+      </footer>
+    </div>
   )
 }

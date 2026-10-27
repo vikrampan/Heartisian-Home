@@ -1,77 +1,36 @@
 @import "tailwindcss";
 
-/* Desktop screens wide enough for the hero photo to show the brick wall right of the trowel
-   (squarer screens crop it away, so "Watch Our Story" moves under the hero text instead). */
-@custom-variant hero-wide {
-  @media (min-width: 80rem) and (min-aspect-ratio: 5/3) {
+/* a phone held sideways: the film takes the whole screen */
+@custom-variant phone-landscape {
+  @media (orientation: landscape) and (max-height: 32rem) {
     @slot;
   }
 }
 
 @theme {
-  /* brand palette */
-  --color-terracotta: #9f5738;
-  --color-umber: #513d3c;
-  --color-ivory: #ecddcf;
-  --color-stone: #beb6a9;
-  --color-olive: #9e9268;
-  --color-coast: #56768b;
-
-  /* mockup surfaces */
   --color-paper: #f2ebe0;
-  --color-card: #ebe3d6;
-  --color-tan: #e6d5bd;
   --color-clay: #d29a6c;
-  --color-moss: #393d2d;
   --color-moss-deep: #22251b;
   --color-ink: #2b2620;
-  --color-muted: #5b5248;
 
-  /* type */
   --font-display: "Gilda Display", Georgia, serif;
-  --font-italic: "Cormorant Garamond", Georgia, serif;
-  --font-script: "La Belle Aurore", cursive;
   --font-sans: "Manrope", "Helvetica Neue", Arial, sans-serif;
 
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
-  :root {
-    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .25 0 0 0 0 .18 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    --noise-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .92 0 0 0 0 .85 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
   html {
-    scroll-behavior: smooth;
-  }
-
-  /* clears the scrolled header bar (4rem phones, 4.5rem tablets and up) when jumping to a section */
-  section[id],
-  footer[id] {
-    scroll-margin-top: 4.5rem;
-  }
-
-  @media (min-width: 768px) {
-    section[id],
-    footer[id] {
-      scroll-margin-top: 5rem;
-    }
+    color-scheme: dark;
   }
 
   body {
     margin: 0;
-    background-color: var(--color-paper);
-    color: var(--color-ink);
+    background-color: var(--color-moss-deep);
+    background-image: radial-gradient(120% 70% at 50% 0%, rgb(255 255 255 / 0.05), transparent 70%);
+    color: var(--color-paper);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    overflow-x: hidden;
-  }
-
-  ::selection {
-    background-color: var(--color-terracotta);
-    color: var(--color-paper);
   }
 
   :focus-visible {
@@ -80,196 +39,19 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
     *,
     *::before,
     *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
   }
 }
 
 @layer components {
-  /* ---- type ---- */
   .eyebrow {
-    font-family: var(--font-sans);
     font-weight: 600;
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-  }
-
-  .heading-hero {
-    font-family: var(--font-display);
-    font-size: clamp(3.4rem, 6.4vw + 1.25rem, 7rem);
-    line-height: 1.02;
-    letter-spacing: -0.01em;
-  }
-
-  .heading {
-    font-family: var(--font-display);
-    font-size: clamp(2.6rem, 2.6vw + 1.2rem, 3.4rem);
-    line-height: 1.1;
-    letter-spacing: -0.005em;
-  }
-
-  .quote {
-    font-family: var(--font-italic);
-    font-style: italic;
-    font-weight: 500;
-  }
-
-  .script {
-    font-family: var(--font-script);
-    font-weight: 400;
-    line-height: 1.25;
-  }
-
-  .container-site {
-    width: 100%;
-    max-width: 80rem;
-    margin-inline: auto;
-    padding-inline: 1.5rem;
-  }
-
-  @media (min-width: 768px) {
-    .container-site {
-      padding-inline: 2.5rem;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .container-site {
-      padding-inline: 3.5rem;
-    }
-  }
-
-  /* ---- surfaces ---- */
-  /* Both glows fade out before the section's top and bottom edges, so stacked paper sections join
-     without a visible line. */
-  .paper {
-    background-color: var(--color-paper);
-    background-image:
-      radial-gradient(90% 60% at 30% 50%, rgb(255 255 255 / 0.45), transparent 70%),
-      radial-gradient(60% 45% at 100% 55%, rgb(190 182 169 / 0.28), transparent 70%),
-      var(--noise);
-  }
-
-  .moss {
-    background-color: var(--color-moss);
-    background-image:
-      radial-gradient(80% 60% at 30% 45%, rgb(255 255 255 / 0.07), transparent 70%),
-      radial-gradient(70% 60% at 92% 95%, rgb(0 0 0 / 0.25), transparent 70%),
-      var(--noise-light);
-  }
-
-  .grain::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: var(--noise-light);
-    mix-blend-mode: overlay;
-  }
-
-  /* ---- reveal on scroll (hidden state only once JS has booted) ---- */
-  .js .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition:
-      opacity 0.9s var(--ease-soft),
-      transform 0.9s var(--ease-soft);
-    transition-delay: var(--reveal-delay, 0ms);
-  }
-
-  .js .reveal[data-visible="true"] {
-    opacity: 1;
-    transform: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .js .reveal {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  /* hero photo shades, measured from the design mockup (photo vs. mockup, pixel by pixel).
-     phones: the photo darkens towards the bottom, under the stacked text.
-     desktop: dark on the left behind the title, a soft top for the navigation, a pool of shade on the
-     bricks behind "Watch Our Story", and gentle bottom corners. */
-  .hero-shade {
-    --shade: 22 13 7;
-    background-image: linear-gradient(
-      180deg,
-      rgb(var(--shade) / 0.5) 0%,
-      rgb(var(--shade) / 0.12) 16%,
-      rgb(var(--shade) / 0.55) 36%,
-      rgb(var(--shade) / 0.78) 58%,
-      rgb(var(--shade) / 0.9) 100%
-    );
-  }
-
-  @media (min-width: 1024px) {
-    .hero-shade {
-      background-image:
-        linear-gradient(
-          90deg,
-          rgb(var(--shade) / 0.8) 0%,
-          rgb(var(--shade) / 0.74) 20%,
-          rgb(var(--shade) / 0.6) 31%,
-          rgb(var(--shade) / 0.42) 38%,
-          rgb(var(--shade) / 0.16) 45%,
-          rgb(var(--shade) / 0.06) 53%,
-          transparent 62%
-        ),
-        linear-gradient(180deg, rgb(var(--shade) / 0.5) 0%, rgb(var(--shade) / 0.28) 13%, transparent 28%),
-        radial-gradient(22% 24% at 86% 63%, rgb(var(--shade) / 0.55), transparent),
-        radial-gradient(40% 42% at 100% 100%, rgb(var(--shade) / 0.45), transparent),
-        linear-gradient(0deg, rgb(var(--shade) / 0.3) 0%, transparent 20%);
-    }
-  }
-
-  /* warm earth panel behind the Build section text (colours sampled from the mockups) */
-  .earth {
-    background-color: #7d5030;
-    background-image:
-      var(--noise-light),
-      linear-gradient(160deg, #93633c 0%, #7d5030 42%, #5e3b22 100%);
-  }
-
-  /* the path photo dissolves into the earth panel: from its top edge on phones, from the left on desktop */
-  .build-photo {
-    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 42%);
-    mask-image: linear-gradient(180deg, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 42%);
-  }
-
-  @media (min-width: 1024px) {
-    .build-photo {
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 46%);
-      mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.5) 22%, #000 46%);
-    }
-  }
-
-  /* lime-filled lettering cut into brick: shadow on the upper lip of the cut, light catching the lower edge */
-  .carved {
-    color: #f4e7d3;
-    text-shadow:
-      0 -1px 0 rgb(48 18 6 / 0.6),
-      0 1px 0 rgb(255 226 190 / 0.25),
-      0 0 3px rgb(30 10 4 / 0.45),
-      0 2px 12px rgb(30 10 4 / 0.5);
-  }
-
-  .no-scrollbar {
-    scrollbar-width: none;
-  }
-
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
   }
 }
