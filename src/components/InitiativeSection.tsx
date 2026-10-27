@@ -13,7 +13,7 @@ export default function InitiativeSection() {
             title={
               <>
                 Learning to <br />
-                Build with <br className="lg:hidden" />
+                Build with <br className="md:hidden" />
                 Nature
               </>
             }

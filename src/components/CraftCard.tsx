@@ -11,17 +11,18 @@ interface CraftCardProps {
 
 export default function CraftCard({ media, name, description, photoClassName = '' }: CraftCardProps) {
   return (
-    <article className="group flex h-full items-center gap-4 rounded-xl bg-card p-3.5 shadow-[0_10px_30px_-18px_rgb(0_0_0/0.6)] transition-[translate,box-shadow] duration-500 ease-[var(--ease-soft)] lg:flex-col lg:items-stretch lg:gap-0 lg:overflow-hidden lg:rounded-lg lg:p-0 lg:hover:-translate-y-1 lg:hover:shadow-[0_22px_40px_-18px_rgb(0_0_0/0.7)]">
-      <div className="h-28 w-[7.5rem] shrink-0 overflow-hidden rounded-lg lg:aspect-[6/5] lg:h-auto lg:w-full lg:rounded-none">
+    // phones: a row with a thumbnail; tablets and up: a photo card
+    <article className="group flex h-full items-center gap-4 rounded-xl bg-card p-3.5 shadow-[0_10px_30px_-18px_rgb(0_0_0/0.6)] md:flex-col md:items-stretch md:gap-0 md:overflow-hidden md:rounded-lg md:p-0">
+      <div className="h-28 w-[7.5rem] shrink-0 overflow-hidden rounded-lg md:aspect-[6/5] md:h-auto md:w-full md:rounded-none">
         <Photo
           media={media}
           labelPosition="none"
-          className={`h-full w-full transition-transform duration-[1.2s] ease-[var(--ease-soft)] lg:group-hover:scale-105 ${photoClassName}`}
+          className={`h-full w-full transition-transform duration-[1.6s] ease-[var(--ease-soft)] md:group-hover:scale-[1.04] ${photoClassName}`}
         />
       </div>
-      <div className="lg:flex lg:flex-1 lg:flex-col lg:items-center lg:px-4 lg:pb-6 lg:pt-5 lg:text-center">
-        <h3 className="text-[1.05rem] font-semibold leading-snug text-ink lg:text-base">{name}</h3>
-        <p className="mt-1.5 text-[0.95rem] leading-snug text-muted lg:mt-2 lg:text-sm">{description}</p>
+      <div className="md:flex md:flex-1 md:flex-col md:items-center md:px-4 md:pb-6 md:pt-5 md:text-center">
+        <h3 className="text-[1.05rem] font-semibold leading-snug text-ink md:text-base">{name}</h3>
+        <p className="mt-1.5 text-[0.95rem] leading-snug text-muted md:mt-2 md:text-sm">{description}</p>
       </div>
     </article>
   )

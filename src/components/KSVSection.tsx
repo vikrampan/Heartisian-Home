@@ -10,7 +10,7 @@ export default function KSVSection() {
         <Reveal className="px-6 pt-4 md:px-10 lg:col-start-2 lg:row-start-1 lg:self-stretch lg:bg-[#efe8dd] lg:px-14 lg:pt-20 xl:px-16">
           <SectionIntro
             eyebrow="Kanha Shanti Vanam"
-            title={<>More Than <br className="lg:hidden" />a Township</>}
+            title={<>More Than <br className="md:hidden" />a Township</>}
             titleClassName="lg:text-[2.6rem]"
           />
           <p className="mt-5 max-w-[30rem] text-[1.0625rem] leading-relaxed text-muted lg:text-base">

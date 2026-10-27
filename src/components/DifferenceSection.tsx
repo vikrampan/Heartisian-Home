@@ -12,17 +12,17 @@ export default function DifferenceSection() {
 
       <div className="container-site relative">
         <Reveal>
-          <p className="eyebrow max-w-[16rem] leading-[1.9] text-muted lg:max-w-none">The Heartisan Home Difference</p>
+          <p className="eyebrow max-w-[16rem] leading-[1.9] text-muted md:max-w-none">The Heartisan Home Difference</p>
           <h2 className="heading mt-4 text-ink">
-            A Different <br className="lg:hidden" />
+            A Different <br className="md:hidden" />
             Place to Learn.
             <br />
-            A Different <br className="lg:hidden" />
+            A Different <br className="md:hidden" />
             Way to Build.
           </h2>
         </Reveal>
 
-        <ul className="mt-10 grid gap-9 lg:mt-14 lg:grid-cols-4 lg:gap-0">
+        <ul className="mt-10 grid gap-9 md:grid-cols-2 md:gap-x-10 md:gap-y-12 lg:mt-14 lg:grid-cols-4 lg:gap-0">
           {PILLARS.map((pillar, index) => (
             <li key={pillar.title} className={index > 0 ? 'lg:border-l lg:border-stone/70' : ''}>
               <Reveal delay={index * 90} className={`flex gap-5 lg:block ${index === 0 ? 'lg:pr-8' : 'lg:px-8'}`}>

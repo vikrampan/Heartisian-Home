@@ -14,9 +14,9 @@ export default function StorySection({ onPlayVideo }: StorySectionProps) {
           <p className="eyebrow text-muted">Our Story</p>
           <span className="mt-4 block h-px w-10 bg-ink/40" aria-hidden="true" />
           <h2 className="heading mt-5 text-ink">
-            The Heart <br className="lg:hidden" />
-            Behind <br className="hidden lg:inline" />
-            Our <br className="lg:hidden" />
+            The Heart <br className="md:hidden" />
+            Behind <br className="hidden md:inline" />
+            Our <br className="md:hidden" />
             Homes.
           </h2>
           <p className="mt-5 max-w-sm text-[1.0625rem] leading-relaxed text-muted">

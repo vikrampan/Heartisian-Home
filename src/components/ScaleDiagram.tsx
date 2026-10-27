@@ -12,7 +12,7 @@ const brace = (x1: number, x2: number) => {
 
 export function ScaleDiagramDesktop() {
   return (
-    <div className="hidden lg:block">
+    <div className="hidden md:block">
       <ol className="grid grid-cols-4 gap-7">
         {JOURNEY_STEPS.map((step, index) => (
           <li key={step.title} className="relative">
@@ -44,7 +44,7 @@ export function ScaleDiagramDesktop() {
 
 export function ScaleDiagramMobile() {
   return (
-    <div className="lg:hidden">
+    <div className="md:hidden">
       <div className="relative">
         <span aria-hidden="true" className="absolute bottom-10 left-[2.625rem] top-10 w-px bg-ink/25" />
         <ol className="relative space-y-6">

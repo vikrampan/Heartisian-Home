@@ -5,14 +5,14 @@ import { ScaleDiagramDesktop, ScaleDiagramMobile } from './ScaleDiagram'
 export default function JourneySection() {
   return (
     <section id="journey" className="paper relative pb-20 pt-16 lg:py-24">
-      <div className="container-site grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12">
+      <div className="container-site grid gap-12 xl:grid-cols-[1.05fr_0.95fr] xl:items-center">
         <Reveal>
           <SectionIntro
             eyebrow="From Learning to Scale"
             title={
               <>
-                Building a <br className="lg:hidden" />
-                Sustainable <br className="hidden lg:inline" />
+                Building a <br className="md:hidden" />
+                Sustainable <br className="hidden md:inline" />
                 Future at Scale
               </>
             }

@@ -23,10 +23,10 @@ export default function BuildSection() {
           <div className="flex items-start justify-between gap-3">
             {/* phones: sized so each of the four lines fits beside the sprig */}
             <h2 className="font-display text-[clamp(2.1rem,9.4vw,2.6rem)] leading-[1.08] sm:text-[3rem] lg:text-[clamp(3rem,3.9vw,3.75rem)]">
-              Build with <br className="lg:hidden" />
+              Build with <br className="md:hidden" />
               the Earth.
               <br />
-              Build with <br className="lg:hidden" />
+              Build with <br className="md:hidden" />
               the Heart.
             </h2>
             <div className="mt-1 flex shrink-0 items-start lg:hidden">
