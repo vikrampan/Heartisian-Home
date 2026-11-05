@@ -1,8 +1,6 @@
 import { useDialog } from '../hooks/useDialog'
-import Photo from './Photo'
 import FilmPlayer from '../../shared/FilmPlayer'
-import { IconClose, IconPlay } from './icons'
-import { FILM } from '../../film'
+import { IconClose } from './icons'
 
 interface VideoModalProps {
   open: boolean
@@ -20,36 +18,27 @@ export default function VideoModal({ open, onClose }: VideoModalProps) {
       aria-modal="true"
       aria-label="Our Story — 13 minute film"
       onClick={onClose}
-      className="fixed inset-0 z-[70] flex items-center justify-center bg-moss-deep/95 p-4 sm:p-10"
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-moss-deep/95 p-4 sm:p-10 phone-landscape:p-0"
     >
-      <div ref={containerRef} onClick={(event) => event.stopPropagation()} className="w-full max-w-5xl text-paper">
-        <div className="mb-4 flex items-center justify-between">
-          <p className="eyebrow">Our Story — 13 minute film</p>
+      {/* limited by the screen's height too, so the 3:2 film never pushes the close button off a laptop screen */}
+      <div
+        ref={containerRef}
+        onClick={(event) => event.stopPropagation()}
+        className="relative w-[min(100%,64rem,calc((100svh-6rem)*3/2))] text-paper sm:w-[min(100%,64rem,calc((100svh-9.5rem)*3/2))] phone-landscape:w-[calc(100svh*3/2)]"
+      >
+        <div className="mb-4 flex items-center justify-between phone-landscape:absolute phone-landscape:right-2 phone-landscape:top-2 phone-landscape:z-10 phone-landscape:mb-0">
+          <p className="eyebrow phone-landscape:hidden">Our Story — 13 minute film</p>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close video"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-paper/40 transition-colors hover:bg-paper/10"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-paper/40 transition-colors hover:bg-paper/10 phone-landscape:bg-black/40"
           >
             <IconClose className="h-5 w-5" />
           </button>
         </div>
 
-        {/* the same film (and setting, src/film.ts) as the basic page */}
-        {FILM.url ? (
-          <FilmPlayer className="w-full rounded-lg" />
-        ) : (
-          <div className="relative aspect-video overflow-hidden rounded-lg bg-black">
-            <Photo media="story" labelPosition="none" className="absolute inset-0 h-full w-full" />
-            <span className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-paper/90">
-              <IconPlay className="ml-1 h-8 w-8" />
-            </span>
-          </div>
-        )}
-
-        {!FILM.url && (
-          <p className="mt-4 text-center text-sm text-paper/80">The film will play here once the final video is added.</p>
-        )}
+        <FilmPlayer autoStart className="w-full rounded-lg phone-landscape:rounded-none" />
       </div>
     </div>
   )

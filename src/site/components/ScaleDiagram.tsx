@@ -63,7 +63,7 @@ export function ScaleDiagramMobile() {
       </div>
       <div className="mt-10 flex items-center justify-between gap-4 text-ink">
         <span className="flex flex-col items-center gap-2 text-center text-sm">
-          <LogoMark className="h-11 w-11" />
+          <LogoMark className="h-12 w-12" />
           Heartisan Home
         </span>
         <span aria-hidden="true" className="relative mb-6 h-px flex-1 bg-ink/40">

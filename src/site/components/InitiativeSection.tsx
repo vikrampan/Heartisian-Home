@@ -1,7 +1,7 @@
 import Photo from './Photo'
 import Reveal from './Reveal'
 import SectionIntro from './SectionIntro'
-import { Stamp } from './art'
+import { LogoFull } from './art'
 
 export default function InitiativeSection() {
   return (
@@ -40,7 +40,7 @@ export default function InitiativeSection() {
             <br />
             <span className="ml-3">Tomorrow</span>
           </p>
-          <Stamp className="-mt-2 h-36 w-36 -rotate-12 text-terracotta/80" />
+          <LogoFull className="mt-3 h-auto w-full max-w-[11rem]" />
         </Reveal>
 
         <Reveal delay={250} className="relative -mx-6 md:-mx-10 lg:mx-0">

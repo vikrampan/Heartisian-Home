@@ -54,7 +54,7 @@ export default function Footer() {
         {/* carved into the brick step */}
         <div className="carved row-start-3 flex flex-col items-center justify-center gap-[clamp(1rem,2.2vw,1.6rem)]">
           <div className="flex flex-col items-center gap-2.5 lg:flex-row lg:gap-4">
-            <LogoMark className="h-10 w-10 drop-shadow-[0_-1px_0_rgb(48_18_6/0.6)] lg:h-[clamp(2.5rem,3.2vw,3.25rem)] lg:w-[clamp(2.5rem,3.2vw,3.25rem)]" />
+            <LogoMark className="h-14 w-14 drop-shadow-[0_2px_8px_rgb(30_10_4/0.55)] lg:h-[clamp(3.5rem,4.2vw,4.5rem)] lg:w-[clamp(3.5rem,4.2vw,4.5rem)]" />
             <p className="font-display text-[clamp(1.25rem,6.4vw,1.6rem)] uppercase leading-none tracking-[0.18em] lg:text-[clamp(1.75rem,2.6vw,2.6rem)] lg:tracking-[0.22em]">
               Heartisan Home
             </p>

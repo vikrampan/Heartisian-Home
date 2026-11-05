@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FILM } from '../film'
 
 type Source = { kind: 'none' } | { kind: 'embed'; src: string } | { kind: 'file' }
@@ -57,9 +57,10 @@ function writePosition(seconds: number) {
 
 const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
 
-function FilePlayer() {
+function FilePlayer({ autoStart }: { autoStart: boolean }) {
   const video = useRef<HTMLVideoElement>(null)
   const lastSaved = useRef(0)
+  const reopenings = useRef(0)
   const [started, setStarted] = useState(false)
   const [failed, setFailed] = useState(false)
   const [resumeAt] = useState(readPosition)
@@ -78,9 +79,30 @@ function FilePlayer() {
     })
   }
 
+  // A returning viewer first chooses where to start, so only a fresh viewing starts by itself.
+  useEffect(() => {
+    if (autoStart && !resumeAt) start(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once, when the player opens
+  }, [])
+
+  // GitHub's links to the film expire after about an hour, so someone who pauses for a long time and then jumps ahead
+  // can hit an error. Opening the film again gets a fresh link, and they carry on from the same place.
+  const reopen = (el: HTMLVideoElement, play: boolean) => {
+    const at = el.currentTime
+    el.load()
+    el.addEventListener(
+      'loadedmetadata',
+      () => {
+        el.currentTime = at
+        if (play) el.play().catch(() => {})
+      },
+      { once: true },
+    )
+  }
+
   const retry = () => {
     setFailed(false)
-    video.current?.load()
+    if (video.current) reopen(video.current, started)
   }
 
   return (
@@ -90,6 +112,7 @@ function FilePlayer() {
         ref={video}
         playsInline
         preload="metadata"
+        poster={FILM.posterUrl}
         controls={started}
         controlsList="nodownload"
         aria-label={TITLE}
@@ -109,11 +132,25 @@ function FilePlayer() {
         }}
         onPause={(event) => writePosition(event.currentTarget.currentTime)}
         onEnded={() => writePosition(0)}
-        onError={() => setFailed(true)}
+        // The browser also reports an error on each <source> it skips (such as the phone copy on a computer), and React
+        // passes those up to here. Only an error on the video itself is a failure; the last <source> reports its own.
+        onError={(event) => {
+          if (event.target !== event.currentTarget) return
+          if (started && reopenings.current < 3) {
+            reopenings.current += 1
+            reopen(event.currentTarget, !event.currentTarget.paused)
+          } else {
+            setFailed(true)
+          }
+        }}
+        onPlaying={() => {
+          reopenings.current = 0
+        }}
       >
-        {FILM.mobileUrl && <source src={FILM.mobileUrl} media="(max-width: 767px)" />}
+        {/* the type matters on Safari: GitHub labels these files as generic downloads rather than as video */}
+        {FILM.mobileUrl && <source src={FILM.mobileUrl} type="video/mp4" media="(max-width: 767px), (max-height: 32rem)" />}
         {/* the last source failing means none of them could play */}
-        <source src={FILM.url} onError={() => setFailed(true)} />
+        <source src={FILM.url} type="video/mp4" onError={() => setFailed(true)} />
         {FILM.captionsUrl && <track kind="captions" src={FILM.captionsUrl} srcLang="en" label="English" />}
       </video>
 
@@ -153,12 +190,19 @@ function FilePlayer() {
 
 // ---- the frame ----
 
-// Used by both pages; each one sets the frame's width, corners and shadow through `className`.
-export default function FilmPlayer({ className = '' }: { className?: string }) {
+interface FilmPlayerProps {
+  /** Sets the frame's width, corners and shadow; each page sizes it for its own layout. */
+  className?: string
+  /** For a player opened by a "Watch" button: start playing without a second tap. */
+  autoStart?: boolean
+}
+
+export default function FilmPlayer({ className = '', autoStart = false }: FilmPlayerProps) {
   const source = resolve(FILM.url)
 
   return (
-    <div className={`relative mx-auto aspect-video overflow-hidden bg-[#0e0b08] text-paper ${className}`}>
+    // 3:2 is the shape of this film (3840x2560)
+    <div className={`relative mx-auto aspect-[3/2] overflow-hidden bg-[#0e0b08] text-paper ${className}`}>
       {source.kind === 'embed' && (
         <iframe
           src={source.src}
@@ -170,7 +214,7 @@ export default function FilmPlayer({ className = '' }: { className?: string }) {
         />
       )}
 
-      {source.kind === 'file' && <FilePlayer />}
+      {source.kind === 'file' && <FilePlayer autoStart={autoStart} />}
 
       {source.kind === 'none' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-[radial-gradient(circle_at_50%_40%,#3b3d2e,#14120d_78%)] px-6 text-center">

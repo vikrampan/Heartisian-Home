@@ -2,6 +2,13 @@
 @source "../site";
 @source "../shared";
 
+/* a phone held sideways: the film takes the whole screen */
+@custom-variant phone-landscape {
+  @media (orientation: landscape) and (max-height: 32rem) {
+    @slot;
+  }
+}
+
 /* Desktop screens wide enough for the hero photo to show the brick wall right of the trowel
    (squarer screens crop it away, so "Watch Our Story" moves under the hero text instead). */
 @custom-variant hero-wide {
