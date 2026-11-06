@@ -1,25 +1,22 @@
-import { LogoMark } from './art'
+import { LogoOnShade } from './art'
 
 interface LogoProps {
-  stacked?: boolean
-  breakOnMobile?: boolean
-  showTagline?: boolean
-  className?: string
+  /** The logo's size; the header shrinks it once the page scrolls. */
+  sizeClassName: string
 }
 
-export default function Logo({ stacked = false, breakOnMobile = false, showTagline = true, className = '' }: LogoProps) {
+export default function Logo({ sizeClassName }: LogoProps) {
   return (
-    <span className={`flex ${stacked ? 'flex-col items-center gap-3 text-center' : 'items-center gap-3'} ${className}`}>
-      <LogoMark className={stacked ? 'h-14 w-14' : 'h-12 w-12 shrink-0 md:h-14 md:w-14'} />
+    <span className="flex items-center gap-3">
+      <LogoOnShade eager sizes="7.5rem" className={`transition-[width,height] duration-500 ease-soft ${sizeClassName}`} />
       <span className="flex flex-col gap-1">
-        <span className={`font-sans font-semibold uppercase leading-[1.15] tracking-[0.12em] ${stacked ? 'text-xl' : 'text-[0.95rem]'}`}>
-          Heartisan {breakOnMobile && <br className="md:hidden" />}Home
+        <span className="font-sans text-[0.95rem] font-semibold uppercase leading-[1.15] tracking-[0.12em]">
+          Heartisan <br className="md:hidden" />
+          Home
         </span>
-        {showTagline && (
-          <span className={`text-[0.6875rem] leading-tight opacity-80 ${breakOnMobile ? 'hidden md:block' : ''}`}>
-            Building with Earth. Learning with the Heart.
-          </span>
-        )}
+        <span className="hidden text-[0.6875rem] leading-tight opacity-80 md:block">
+          Building with Earth. Learning with the Heart.
+        </span>
       </span>
     </span>
   )

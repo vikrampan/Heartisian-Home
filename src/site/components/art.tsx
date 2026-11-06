@@ -1,22 +1,37 @@
 type ArtProps = { className?: string }
 
-// Both are cut from the master logo file. The bird and disc stay crisp on any background and at small sizes.
-export function LogoMark({ className }: ArtProps) {
-  return <img src="/images/logo/mark.webp" alt="" width={256} height={256} decoding="async" className={className} />
+interface LogoFullProps extends ArtProps {
+  /** Rendered width, so the browser can pick the right file. */
+  sizes: string
+  alt?: string
+  eager?: boolean
 }
 
-// The ring of text around it needs a light background to read, so this one is only for light sections.
-export function LogoFull({ className }: ArtProps) {
+// The supplied logo, unchanged. Beside its name in text it is decorative, so `alt` defaults to empty.
+export function LogoFull({ className, sizes, alt = '', eager = false }: LogoFullProps) {
   return (
     <img
       src="/images/logo/logo-full.webp"
-      alt="Heartisan Home logo: a hummingbird in a circle of leaves. Building with Earth. Learning with the Heart."
+      srcSet="/images/logo/logo-320.webp 320w, /images/logo/logo-full.webp 640w"
+      sizes={sizes}
+      alt={alt}
       width={640}
       height={640}
-      loading="lazy"
+      loading={eager ? 'eager' : 'lazy'}
       decoding="async"
       className={className}
     />
+  )
+}
+
+// On photos: a soft pool of shade behind the logo keeps its olive and blue lettering readable.
+export function LogoOnShade({ className = '', ...logo }: LogoFullProps) {
+  return (
+    <span
+      className={`relative isolate block shrink-0 before:absolute before:-inset-[14%] before:-z-10 before:rounded-full before:bg-[radial-gradient(closest-side,rgb(18_12_8/0.78),rgb(18_12_8/0.6)_72%,transparent)] ${className}`}
+    >
+      <LogoFull {...logo} className="h-full w-full" />
+    </span>
   )
 }
 

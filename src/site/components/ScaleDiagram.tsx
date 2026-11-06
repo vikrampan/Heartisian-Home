@@ -1,5 +1,5 @@
 import LineIcon from './lineIcons'
-import { LogoMark } from './art'
+import { LogoFull } from './art'
 import { JOURNEY_STEPS } from '../data/content'
 
 const CIRCLE = 'flex shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#f2e3cd,#d6b893)] text-ink shadow-[inset_0_-6px_14px_rgb(120_80_40/0.18)]'
@@ -63,7 +63,7 @@ export function ScaleDiagramMobile() {
       </div>
       <div className="mt-10 flex items-center justify-between gap-4 text-ink">
         <span className="flex flex-col items-center gap-2 text-center text-sm">
-          <LogoMark className="h-12 w-12" />
+          <LogoFull sizes="5rem" className="h-20 w-20" />
           Heartisan Home
         </span>
         <span aria-hidden="true" className="relative mb-6 h-px flex-1 bg-ink/40">

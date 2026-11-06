@@ -32,7 +32,7 @@
 
   /* section links land below the sticky header */
   section[id] {
-    scroll-margin-top: 4rem;
+    scroll-margin-top: 5rem;
   }
 
   body {

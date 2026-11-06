@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { LogoMark } from './art'
+import { LogoOnShade } from './art'
 import { NAV } from '../data/content'
 
 // The layout is drawn onto this specific photo, so it is not a swappable media slot:
@@ -43,18 +43,19 @@ export default function Footer() {
 
       {/* full width on purpose: the rows must track the photo, which always spans the whole screen */}
       <div className="grid h-[46rem] grid-rows-[32fr_2.5fr_33.5fr_32fr] px-6 text-center md:px-10 lg:aspect-[2.6/1] lg:h-auto lg:max-h-[48rem] lg:grid-rows-[23.7fr_3.6fr_49fr_23.7fr]">
-        {/* on the wall */}
-        <p className="row-start-1 flex items-center justify-center pt-4">
-          <span className="script inline-block -rotate-3 text-[1.9rem] leading-[1.35] text-paper [text-shadow:0_1px_14px_rgb(20_12_6/0.7)] lg:text-[clamp(1.9rem,2.4vw,2.6rem)]">
+        {/* on the wall. phones and tablets: the logo sits here, where the wall is dark; the brick step is full */}
+        <div className="row-start-1 flex flex-col items-center justify-center gap-1 pt-2 lg:pt-4">
+          <LogoOnShade sizes="7.5rem" className="h-[7.5rem] w-[7.5rem] lg:hidden" />
+          <p className="script inline-block -rotate-3 text-[1.75rem] leading-[1.3] text-paper [text-shadow:0_1px_14px_rgb(20_12_6/0.7)] lg:text-[clamp(1.9rem,2.4vw,2.6rem)] lg:leading-[1.35]">
             Building with Earth. <br className="lg:hidden" />
             Learning with the Heart.
-          </span>
-        </p>
+          </p>
+        </div>
 
         {/* carved into the brick step */}
         <div className="carved row-start-3 flex flex-col items-center justify-center gap-[clamp(1rem,2.2vw,1.6rem)]">
           <div className="flex flex-col items-center gap-2.5 lg:flex-row lg:gap-4">
-            <LogoMark className="h-14 w-14 drop-shadow-[0_2px_8px_rgb(30_10_4/0.55)] lg:h-[clamp(3.5rem,4.2vw,4.5rem)] lg:w-[clamp(3.5rem,4.2vw,4.5rem)]" />
+            <LogoOnShade sizes="7.5rem" className="hidden lg:block lg:h-[clamp(5.5rem,8vw,7.5rem)] lg:w-[clamp(5.5rem,8vw,7.5rem)]" />
             <p className="font-display text-[clamp(1.25rem,6.4vw,1.6rem)] uppercase leading-none tracking-[0.18em] lg:text-[clamp(1.75rem,2.6vw,2.6rem)] lg:tracking-[0.22em]">
               Heartisan Home
             </p>

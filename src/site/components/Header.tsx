@@ -49,11 +49,11 @@ export default function Header({ activeNav, menuOpen, onMenuOpen }: HeaderProps)
 
       <div
         className={`container-site relative flex items-center justify-between gap-6 transition-[height] duration-500 ease-soft ${
-          scrolled ? 'h-16 md:h-[4.5rem]' : 'h-[4.5rem] md:h-[5.5rem]'
+          scrolled ? 'h-20 md:h-24' : 'h-24 md:h-[8.5rem]'
         }`}
       >
         <a href="#hero" aria-label="Heartisan Home — back to top" className="shrink-0">
-          <Logo breakOnMobile />
+          <Logo sizeClassName={scrolled ? 'h-[4.5rem] w-[4.5rem] md:h-[5.5rem] md:w-[5.5rem]' : 'h-[5.5rem] w-[5.5rem] md:h-[7.5rem] md:w-[7.5rem]'} />
         </a>
 
         <nav aria-label="Primary" className="hidden xl:block">

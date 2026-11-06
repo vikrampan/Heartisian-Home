@@ -55,16 +55,16 @@
     scroll-behavior: smooth;
   }
 
-  /* clears the scrolled header bar (4rem phones, 4.5rem tablets and up) when jumping to a section */
+  /* clears the scrolled header bar (5rem phones, 6rem tablets and up) when jumping to a section */
   section[id],
   footer[id] {
-    scroll-margin-top: 4.5rem;
+    scroll-margin-top: 5.5rem;
   }
 
   @media (min-width: 768px) {
     section[id],
     footer[id] {
-      scroll-margin-top: 5rem;
+      scroll-margin-top: 6.5rem;
     }
   }
 

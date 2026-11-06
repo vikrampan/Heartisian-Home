@@ -24,7 +24,7 @@ export default function Hero({ onPlayVideo }: HeroProps) {
       <div aria-hidden="true" className="hero-shade absolute inset-0 -z-10" />
 
       {/* xl+: the text keeps to the dark wall left of the man, which sits at about 30% of the photo's width */}
-      <div className="container-site flex flex-1 flex-col pb-12 pt-28 md:pb-14 lg:pb-16 lg:pt-36 xl:max-w-none xl:pl-[min(calc((100vw-80rem)/2+3.5rem),calc(28vw-17rem))] hero-wide:pb-[7.75rem]">
+      <div className="container-site flex flex-1 flex-col pb-12 pt-28 md:pb-14 lg:pb-16 lg:pt-40 xl:max-w-none xl:pl-[min(calc((100vw-80rem)/2+3.5rem),calc(28vw-17rem))] hero-wide:pb-[7.75rem]">
         <div className="flex flex-1 flex-col justify-end lg:justify-center">
           <div className="max-w-xl">
             <p className="eyebrow mb-5 leading-[1.9] text-paper/90 lg:hidden">

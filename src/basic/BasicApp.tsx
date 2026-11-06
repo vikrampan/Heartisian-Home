@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import FilmPlayer from '../shared/FilmPlayer'
 import { FILM } from '../film'
 import LineIcon from '../site/components/lineIcons'
-import { LogoMark } from '../site/components/art'
+import { LogoFull } from '../site/components/art'
 import { JOURNEY_STEPS, PILLARS, TECHNIQUES } from '../site/data/content'
 
 // The basic landing page: a standard single-page layout with no photography, built around the film.
@@ -60,10 +60,10 @@ function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-white/95 backdrop-blur phone-landscape:static">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 md:px-8">
-        <a href="#top" className="flex items-center gap-2.5">
-          <LogoMark className="h-10 w-10" />
-          <span className="text-[1.05rem] font-extrabold tracking-tight">Heartisan Home</span>
+      <div className="mx-auto flex h-20 max-w-6xl items-center justify-between gap-4 px-5 md:px-8">
+        <a href="#top" aria-label="Heartisan Home — back to top" className="flex items-center gap-2.5">
+          <LogoFull eager sizes="4.5rem" className="h-[4.5rem] w-[4.5rem]" />
+          <span className="hidden text-[1.05rem] font-extrabold tracking-tight sm:inline">Heartisan Home</span>
         </a>
 
         <nav aria-label="Sections" className="hidden lg:block">
@@ -159,8 +159,8 @@ export default function BasicApp() {
             us.
           </SectionHeading>
           {/* edge to edge on phones; on laptops sized so the whole film fits on screen under the header */}
-          <div id="watch" className="-mx-5 mt-10 scroll-mt-20 sm:mx-auto sm:max-w-5xl phone-landscape:-mx-5 phone-landscape:max-w-none phone-landscape:scroll-mt-0 phone-landscape:bg-black">
-            <FilmPlayer className="w-[min(100%,calc(100svh*3/2))] sm:rounded-xl sm:shadow-[0_24px_60px_-28px_rgb(43_38_32/0.55)] md:w-[min(100%,calc((100svh-7rem)*3/2))] phone-landscape:w-[min(100%,calc(100svh*3/2))] phone-landscape:rounded-none phone-landscape:shadow-none" />
+          <div id="watch" className="-mx-5 mt-10 scroll-mt-24 sm:mx-auto sm:max-w-5xl phone-landscape:-mx-5 phone-landscape:max-w-none phone-landscape:scroll-mt-0 phone-landscape:bg-black">
+            <FilmPlayer className="w-[min(100%,calc(100svh*3/2))] sm:rounded-xl sm:shadow-[0_24px_60px_-28px_rgb(43_38_32/0.55)] md:w-[min(100%,calc((100svh-8rem)*3/2))] phone-landscape:w-[min(100%,calc(100svh*3/2))] phone-landscape:rounded-none phone-landscape:shadow-none" />
           </div>
           <p className="mt-4 text-center text-sm text-muted">Best watched with the sound on.</p>
         </section>
@@ -294,7 +294,7 @@ export default function BasicApp() {
         <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-[1.4fr_1fr] md:items-start">
           <div>
             <p className="flex items-center gap-2.5 text-white">
-              <LogoMark className="h-10 w-10" />
+              <LogoFull sizes="7rem" className="h-28 w-28" />
               <span className="text-[1.05rem] font-extrabold">Heartisan Home</span>
             </p>
             <p className="mt-3 max-w-xs text-sm leading-relaxed">

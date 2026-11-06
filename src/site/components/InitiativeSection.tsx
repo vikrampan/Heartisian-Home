@@ -6,7 +6,7 @@ import { LogoFull } from './art'
 export default function InitiativeSection() {
   return (
     <section id="initiative" className="paper relative z-10 pb-16 pt-14 lg:py-24">
-      <div className="container-site grid items-center gap-10 lg:grid-cols-[1.25fr_0.5fr_0.9fr] lg:gap-12">
+      <div className="container-site grid items-center gap-10 lg:grid-cols-[1.2fr_0.6fr_0.9fr] lg:gap-12">
         <Reveal>
           <SectionIntro
             eyebrow="The Initiative"
@@ -28,8 +28,8 @@ export default function InitiativeSection() {
           </div>
         </Reveal>
 
-        <Reveal delay={150} className="relative hidden flex-col items-center lg:flex">
-          <p className="script -rotate-6 text-[1.75rem] leading-[1.55] text-terracotta">
+        <Reveal delay={150} className="relative flex flex-col items-center">
+          <p className="script hidden -rotate-6 text-[1.75rem] leading-[1.55] text-terracotta lg:block">
             People
             <br />
             <span className="ml-2">Skills</span>
@@ -40,7 +40,11 @@ export default function InitiativeSection() {
             <br />
             <span className="ml-3">Tomorrow</span>
           </p>
-          <LogoFull className="mt-3 h-auto w-full max-w-[11rem]" />
+          <LogoFull
+            alt="Heartisan Home logo: a hummingbird in a circle of leaves, with the words Building with Earth. Learning with the Heart."
+            sizes="15rem"
+            className="h-auto w-[min(76%,15rem)] lg:mt-3 lg:w-full lg:max-w-[15rem]"
+          />
         </Reveal>
 
         <Reveal delay={250} className="relative -mx-6 md:-mx-10 lg:mx-0">
