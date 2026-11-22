@@ -18,6 +18,7 @@ import {
   type Registration,
 } from './lib'
 import { paymentCode } from './helpers'
+import { coverFor } from './photos'
 import { Icon, Loading, Page, PRIMARY, Problem, SECONDARY, Spinner } from './ui'
 
 // Each person's private page, reached from the link in their emails. It shows where their registration stands and
@@ -45,6 +46,7 @@ export default function BookingPage({ token, fresh }: { token: string; fresh: bo
       <section className="paper min-h-[70vh] pb-20 pt-10 md:pt-14">
         <div className="container-site max-w-4xl">
           <Status view={data} fresh={fresh} />
+          <Progress r={data.registration} />
           <div className="mt-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
             <div className="space-y-6">
               {data.registration.status === 'held' && data.registration.amount_inr > 0 && <Pay view={data} act={act} />}
@@ -54,6 +56,7 @@ export default function BookingPage({ token, fresh }: { token: string; fresh: bo
             </div>
             <aside className="space-y-6">
               <Help view={data} />
+              {!['cancelled', 'expired'].includes(data.registration.status) && <Share r={data.registration} />}
               {['held', 'verifying', 'confirmed', 'waitlisted', 'interested'].includes(data.registration.status) && <Cancel r={data.registration} act={act} />}
             </aside>
           </div>
@@ -63,7 +66,23 @@ export default function BookingPage({ token, fresh }: { token: string; fresh: bo
   )
 }
 
-function statusCopy(r: Registration) {
+type StatusCopy = { stamp: string; tone: string; heading: string; text: string; icon: Parameters<typeof Icon>[0]['name']; badge: string }
+
+const LOOK: Record<Registration['status'], Pick<StatusCopy, 'icon' | 'badge'>> = {
+  confirmed: { icon: 'check', badge: 'bg-sage-soft text-sage' },
+  held: { icon: 'hourglass', badge: 'bg-ochre-soft text-ochre' },
+  verifying: { icon: 'clock', badge: 'bg-sky-soft text-sky' },
+  interested: { icon: 'calendar', badge: 'bg-ochre-soft text-ochre' },
+  waitlisted: { icon: 'clock', badge: 'bg-sky-soft text-sky' },
+  cancelled: { icon: 'close', badge: 'bg-ink/8 text-muted' },
+  expired: { icon: 'hourglass', badge: 'bg-ink/8 text-muted' },
+}
+
+function statusCopy(r: Registration): StatusCopy {
+  return { ...statusText(r), ...LOOK[r.status] }
+}
+
+function statusText(r: Registration) {
   const paid = r.amount_inr > 0
   switch (r.status) {
     case 'confirmed':
@@ -79,7 +98,7 @@ function statusCopy(r: Registration) {
         stamp: 'On the list',
         tone: 'text-[#7a4a26] border-[#7a4a26]',
         heading: "You're on the list",
-        text: "Thank you for your interest. As soon as registration opens, we'll email you and offer you a place, in the order people registered. There is nothing to pay now.",
+        text: "Thank you for your interest. As soon as registration opens, we'll email you and invite you to book before anyone else. There is nothing to pay now.",
       }
     case 'waitlisted':
       return { stamp: `Waitlist #${r.waitlist_position ?? ''}`, tone: 'text-coast border-coast', heading: "You're on the waitlist", text: 'The workshop is full right now. If a place opens up, we will email you straight away.' }
@@ -94,19 +113,12 @@ function Status({ view, fresh }: { view: BookingView; fresh: boolean }) {
   const r = view.registration
   const s = statusCopy(r)
   return (
-    <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10">
-      {/* an ink stamp */}
-      <div
-        aria-hidden="true"
-        className={`flex h-32 w-32 shrink-0 -rotate-[8deg] items-center justify-center rounded-full border-[3px] border-double p-2 text-center ${s.tone}`}
-      >
-        <span className="flex h-full w-full items-center justify-center rounded-full border border-current px-2 text-[0.8rem] font-bold uppercase leading-tight tracking-[0.14em]">
-          {s.stamp}
-        </span>
-      </div>
+    <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
+      <span aria-hidden="true" className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl ${s.badge}`}>
+        <Icon name={s.icon} className="h-8 w-8" />
+      </span>
       <div>
-        {fresh && <p className="script text-[1.75rem] leading-none text-terracotta">Thank you for registering!</p>}
-        <p className="eyebrow mt-3 text-muted">Your booking</p>
+        <p className="eyebrow text-muted">{fresh ? 'Thank you for registering' : 'Your booking'} · {s.stamp}</p>
         <h1 className="mt-2 font-display text-[clamp(2.1rem,2.5vw+1.2rem,3.2rem)] leading-[1.1] text-ink">{s.heading}</h1>
         {s.text && <p className="mt-3 max-w-xl text-[1.0625rem] leading-relaxed text-muted">{s.text}</p>}
         <p className="mt-3 text-sm text-muted">We have also emailed this to {r.email}.</p>
@@ -332,7 +344,9 @@ function Details({ r }: { r: Registration }) {
     ['Registered as', `${r.name} · ${r.email} · ${r.phone}`],
   ]
   return (
-    <div className="rounded-2xl bg-white/60 p-5 ring-1 ring-ink/8 sm:p-7">
+    <div className="overflow-hidden rounded-2xl bg-white/60 ring-1 ring-ink/8">
+      <img src={coverFor(w).src} srcSet={coverFor(w).srcSet || undefined} sizes="(min-width: 1024px) 520px, 100vw" alt="" style={{ objectPosition: coverFor(w).focus }} className="h-40 w-full object-cover sm:h-48" />
+      <div className="p-5 sm:p-7">
       <p className="eyebrow text-muted">The workshop</p>
       <h2 className="mt-2 font-display text-[1.55rem] leading-snug text-ink">
         <a href={`/workshops/${w.slug}`} onClick={onLinkClick} className="underline-offset-4 hover:underline">
@@ -347,13 +361,14 @@ function Details({ r }: { r: Registration }) {
           </div>
         ))}
       </dl>
+      </div>
     </div>
   )
 }
 
 function Help({ view }: { view: BookingView }) {
   return (
-    <div className="rounded-2xl bg-tan/60 p-6">
+    <div className="rounded-2xl bg-sky-soft p-6">
       <p className="font-display text-xl text-ink">Questions?</p>
       <p className="mt-2 text-[0.9375rem] leading-relaxed text-muted">
         {view.contact_email ? (
@@ -419,3 +434,76 @@ function Cancel({ r, act }: { r: Registration; act: (a: 'cancel') => Promise<voi
     </div>
   )
 }
+
+/** Where this registration is on its way to a confirmed place. */
+function Progress({ r }: { r: Registration }) {
+  const paid = r.amount_inr > 0
+  const flows: Partial<Record<Registration['status'], [string[], number]>> = {
+    held: paid ? [['Place reserved', 'Payment sent', 'Confirmed'], 1] : [['Place offered', 'Confirmed'], 1],
+    verifying: [['Place reserved', 'Payment sent', 'Confirmed'], 2],
+    confirmed: paid ? [['Place reserved', 'Payment sent', 'Confirmed'], 3] : [['Registered', 'Confirmed'], 2],
+    waitlisted: [['On the waitlist', 'Place offered', 'Confirmed'], 1],
+    interested: [['On the list', 'Details announced', 'Place offered'], 1],
+  }
+  const flow = flows[r.status]
+  if (!flow) return null
+  const [steps, current] = flow
+  return (
+    <ol aria-label="Progress" className="mt-8 flex items-start rounded-2xl bg-white/60 p-4 ring-1 ring-ink/8 sm:p-5">
+      {steps.map((label, i) => {
+        const done = i < current
+        const now = i === current
+        return (
+          <li key={label} className="relative flex flex-1 flex-col items-center text-center" aria-current={now ? 'step' : undefined}>
+            {i > 0 && (
+              <span aria-hidden="true" className={`absolute right-1/2 top-[0.95rem] h-[3px] w-full -translate-y-1/2 rounded-full ${done || now ? 'bg-terracotta/70' : 'bg-ink/10'}`} />
+            )}
+            <span
+              className={`relative z-10 flex h-[1.9rem] w-[1.9rem] items-center justify-center rounded-full text-xs font-bold ${
+                done ? 'bg-terracotta text-white' : now ? 'bg-paper text-terracotta ring-2 ring-terracotta' : 'bg-paper text-muted ring-1 ring-ink/15'
+              }`}
+            >
+              {done ? <Icon name="check" className="h-4 w-4" /> : i + 1}
+            </span>
+            <span className={`mt-2 px-1 text-xs leading-tight sm:text-sm ${done || now ? 'font-semibold text-ink' : 'text-muted'}`}>{label}</span>
+            {now && <span className="sr-only"> (current step)</span>}
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
+/** Coming with a friend? The workshop's link, ready to send. */
+function Share({ r }: { r: Registration }) {
+  const [copied, setCopied] = useState(false)
+  const url = `${window.location.origin}/workshops/${r.workshop.slug}`
+  const text = `I'm joining "${r.workshop.title}" at ${r.workshop.venue}. Come along? ${url}`
+  return (
+    <div className="rounded-2xl bg-ochre-soft p-6">
+      <p className="font-display text-xl text-ink">Coming with a friend?</p>
+      <p className="mt-1.5 text-sm leading-relaxed text-muted">Building is better together. Send them the workshop.</p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <a href={`https://wa.me/?text=${encodeURIComponent(text)}`} target="_blank" rel="noopener noreferrer" className={`${PRIMARY} h-10 px-4 text-sm`}>
+          <Icon name="share" className="h-4 w-4" />
+          WhatsApp
+          <span className="sr-only">(opens in a new tab)</span>
+        </a>
+        <button
+          type="button"
+          onClick={() => {
+            navigator.clipboard?.writeText(url).then(() => {
+              setCopied(true)
+              setTimeout(() => setCopied(false), 2000)
+            })
+          }}
+          className={`${SECONDARY} h-10 px-4 text-sm`}
+        >
+          <Icon name={copied ? 'check' : 'copy'} className="h-4 w-4" />
+          {copied ? 'Link copied' : 'Copy link'}
+        </button>
+      </div>
+    </div>
+  )
+}
+

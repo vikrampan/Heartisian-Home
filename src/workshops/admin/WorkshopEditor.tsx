@@ -49,7 +49,7 @@ const BLANK: Form = {
   registration_closes_at: '',
   venue: 'Kanha Shanti Vanam',
   venue_address: 'Kanha Shanti Vanam, Telangana',
-  seats: '20',
+  seats: '500',
   fee_inr: '0',
   fee_tba: false,
   hold_hours: '',
@@ -275,7 +275,7 @@ export default function WorkshopEditor({ id }: { id?: string }) {
 
       <Card title="Places & fee">
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Places">
+          <Field label="Places" hint="Never shown on the website. A waitlist starts only if this many are taken.">
             <Input type="number" min={1} max={500} value={form.seats} onChange={(e) => set('seats', e.target.value)} />
           </Field>
           <Field label="Fee per person (₹)" hint={form.fee_tba ? 'Shown as "Fee to be announced"; people register their interest' : Number(form.fee_inr) ? `${rupees(Number(form.fee_inr))}, paid by UPI and confirmed by you` : 'Free: places are confirmed straight away'}>

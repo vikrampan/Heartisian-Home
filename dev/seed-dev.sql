@@ -15,7 +15,7 @@ update public.workshops set
   ends_on = public._today() + 25,
   daily_start = '09:30',
   daily_end = '17:30',
-  seats = 20,
+  seats = 500,
   fee_inr = 3500
 where slug = 'introduction-to-earth-based-building';
 

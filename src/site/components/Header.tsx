@@ -3,6 +3,8 @@ import Button from './Button'
 import Logo from './Logo'
 import { IconMenu } from './icons'
 import { NAV } from '../data/content'
+import { useRegistrationOpen } from '../workshopsFeed'
+import NowOpen from './NowOpen'
 
 interface HeaderProps {
   activeNav: number
@@ -12,6 +14,7 @@ interface HeaderProps {
 
 export default function Header({ activeNav, menuOpen, onMenuOpen }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
+  const open = useRegistrationOpen()
 
   useEffect(() => {
     let frame = 0
@@ -66,6 +69,12 @@ export default function Header({ activeNav, menuOpen, onMenuOpen }: HeaderProps)
                   className="relative whitespace-nowrap py-2 text-[0.9375rem] text-paper/90 transition-colors hover:text-paper after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100 aria-[current=true]:text-paper aria-[current=true]:after:scale-x-100"
                 >
                   {item.label}
+                  {open && item.href === '/workshops' && (
+                    <>
+                      <NowOpen className="absolute -top-3 left-1/2 -translate-x-1/2" />
+                      <span className="sr-only"> (registration now open)</span>
+                    </>
+                  )}
                 </a>
               </li>
             ))}

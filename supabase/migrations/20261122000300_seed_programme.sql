@@ -15,7 +15,7 @@ insert into public.workshops (
   '210 hours · about 5 to 6 weeks · classroom, workshop practice and supervised site work',
   'Kanha Shanti Vanam',
   'Kanha Shanti Vanam, Telangana',
-  20,
+  500,
   0,
   true,
   array[

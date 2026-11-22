@@ -1,16 +1,20 @@
-import { availability, dateParts } from './helpers'
+import { availability, dateParts, startsIn } from './helpers'
 import { feeLabel, onLinkClick, timings, trainerNames, type Workshop } from './lib'
-import { Icon, Portrait, PRIMARY, SeatMeter } from './ui'
+import { coverFor } from './photos'
+import { Icon, Portrait, PRIMARY } from './ui'
 
 export default function TicketCard({ w }: { w: Workshop }) {
   const url = `/workshops/${w.slug}`
+  const photo = coverFor(w)
   const date = dateParts(w.starts_on, w.ends_on)
   const status = availability(w)
 
   return (
     <article className="relative grid overflow-hidden rounded-2xl bg-[#fbf7f0] shadow-[0_22px_50px_-30px_rgb(43_38_32/0.6)] ring-1 ring-ink/5 md:grid-cols-[14rem_1fr]">
       {/* the stub, torn off along the perforation */}
-      <div className="moss relative flex items-center justify-between gap-4 px-6 py-5 text-paper md:flex-col md:items-start md:justify-between md:px-7 md:py-8">
+      <div className="relative isolate flex min-h-[9.5rem] items-end justify-between gap-4 overflow-hidden bg-moss px-6 py-5 text-paper md:min-h-0 md:flex-col md:items-start md:justify-between md:px-7 md:py-8">
+        <img src={photo.src} srcSet={photo.srcSet || undefined} sizes="(min-width: 768px) 224px, 100vw" alt="" loading="lazy" style={{ objectPosition: photo.focus }} className="absolute inset-0 -z-20 h-full w-full object-cover" />
+        <span aria-hidden="true" className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(34_37_27/0.35),rgb(34_37_27/0.88)_70%)] md:bg-[linear-gradient(180deg,rgb(34_37_27/0.82),rgb(34_37_27/0.3)_45%,rgb(34_37_27/0.88))]" />
         <div>
           <p className="eyebrow text-clay">{date.month}</p>
           <p className="mt-1 font-display text-[2.6rem] leading-none md:text-[3.4rem]">{date.days}</p>
@@ -39,6 +43,7 @@ export default function TicketCard({ w }: { w: Workshop }) {
         <div className="flex flex-wrap items-center gap-2">
           <span className={`rounded-full px-3 py-1 text-xs font-semibold ${status.tone}`}>{status.label}</span>
           {w.level && <span className="rounded-full bg-ink/5 px-3 py-1 text-xs font-medium text-muted">{w.level}</span>}
+          {startsIn(w) && <span className="rounded-full bg-ink/5 px-3 py-1 text-xs font-medium text-muted">{startsIn(w)}</span>}
         </div>
         <h2 className="mt-4 font-display text-[1.6rem] leading-[1.2] text-ink md:text-[1.9rem]">
           <a href={url} onClick={onLinkClick} className="decoration-terracotta/40 underline-offset-4 hover:underline">
@@ -78,15 +83,12 @@ export default function TicketCard({ w }: { w: Workshop }) {
         )}
 
         <div className="mt-6 flex flex-col gap-5 border-t border-ink/10 pt-5 sm:flex-row sm:items-end sm:justify-between">
-          {w.interest_only ? (
-            <p className="text-sm text-muted">
-              <span className="font-semibold text-ink">{w.seats} places</span> · register now, pay nothing yet
-            </p>
-          ) : (
-            <SeatMeter seats={w.seats} taken={w.seats_taken} waitlist={w.waitlist} size="sm" />
-          )}
+          <p className="flex items-center gap-2 text-sm text-muted">
+            <Icon name="check" className="h-4 w-4 shrink-0 text-sage" />
+            {w.interest_only ? 'Register now, pay nothing yet' : w.fee_inr ? `Reserve now, pay within ${w.hold_hours_effective} hours` : 'Free · confirmed instantly'}
+          </p>
           <a href={url} onClick={onLinkClick} className={`${PRIMARY} h-12 shrink-0 px-6 text-[0.9375rem]`}>
-            {!w.registration_open ? 'View details' : w.interest_only ? 'Details & register interest' : w.seats_left ? 'Details & registration' : 'Details & waitlist'}
+            {!w.registration_open ? 'View details' : w.interest_only ? 'Details & register interest' : 'Details & registration'}
           </a>
         </div>
       </div>

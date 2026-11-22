@@ -1,5 +1,5 @@
 -- The three trainers and the first workshop, from the workshop outline and the trainers' profiles.
--- The workshop starts as a DRAFT: set its dates, seats and fee in the admin, then publish it.
+-- The workshop starts as a DRAFT: set its dates and fee in the admin, then publish it.
 
 insert into public.trainers (slug, name, title, experience, bio, expertise, sort) values
 (
@@ -64,7 +64,7 @@ insert into public.workshops (
   '2 days · Demonstrations and supervised hands-on practice',
   'Kanha Shanti Vanam',
   'Kanha Shanti Vanam, Telangana',
-  20,
+  500,
   0,
   array[
     'Recognise the principal alternative and earth-based construction techniques covered',

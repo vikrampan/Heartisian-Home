@@ -220,7 +220,7 @@ function participantParts(t: ParticipantTemplate, c: EmailContext): Parts {
         paragraphs: [
           hi,
           `Thank you for your interest in ${w.title}.`,
-          'As soon as registration opens, we will email you and offer you a place, in the order people registered. There is nothing to pay now.',
+          'As soon as registration opens, we will email you and invite you to book before anyone else. There is nothing to pay now.',
           ...stay,
         ],
         facts: workshopFacts(c),

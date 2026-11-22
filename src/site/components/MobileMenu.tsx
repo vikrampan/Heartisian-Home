@@ -2,6 +2,8 @@ import type { CSSProperties } from 'react'
 import { useDialog } from '../hooks/useDialog'
 import { IconClose } from './icons'
 import { NAV } from '../data/content'
+import { useRegistrationOpen } from '../workshopsFeed'
+import NowOpen from './NowOpen'
 
 interface MobileMenuProps {
   open: boolean
@@ -19,6 +21,7 @@ const stagger = (open: boolean, index: number): CSSProperties => ({
 
 export default function MobileMenu({ open, activeNav, onClose }: MobileMenuProps) {
   const containerRef = useDialog(open, onClose)
+  const registrationOpen = useRegistrationOpen()
 
   return (
     // Removed from layout on desktop while closed, so the photo is never downloaded there.
@@ -90,6 +93,12 @@ export default function MobileMenu({ open, activeNav, onClose }: MobileMenuProps
                     className="relative inline-block font-display text-[clamp(1.25rem,2.5svh,1.85rem)] leading-[1.2] text-paper [text-shadow:0_1px_2px_rgb(30_16_6/0.5),0_2px_18px_rgb(30_16_6/0.35)] after:absolute after:inset-x-0 after:-bottom-[0.18em] after:h-[1.5px] after:origin-left after:scale-x-0 after:bg-current after:shadow-[0_1px_3px_rgb(0_0_0/0.35)] after:transition-transform after:duration-300 hover:after:scale-x-100 aria-[current=true]:after:scale-x-100"
                   >
                     {item.label}
+                    {registrationOpen && item.href === '/workshops' && (
+                      <>
+                        <NowOpen className="ml-2 -translate-y-[0.55em] align-middle [text-shadow:none]" />
+                        <span className="sr-only"> (registration now open)</span>
+                      </>
+                    )}
                   </a>
                 </li>
               ))}

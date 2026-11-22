@@ -5,6 +5,7 @@
 @source "../workshops/TicketCard.tsx";
 @source "../workshops/ui.tsx";
 @source "../workshops/helpers.ts";
+@source "../workshops/photos.ts";
 
 /* a phone held sideways: the film takes the whole screen */
 @custom-variant phone-landscape {
@@ -39,6 +40,16 @@
   --color-moss-deep: #22251b;
   --color-ink: #2b2620;
   --color-muted: #5b5248;
+
+  /* companions to the earth palette, for the workshop pages: sunlit ochre, sage, sky and blush, each with a soft tint */
+  --color-ochre: #c98a2b;
+  --color-ochre-soft: #f6e6c8;
+  --color-sage: #5f7d5a;
+  --color-sage-soft: #e2eadb;
+  --color-sky: #3f7391;
+  --color-sky-soft: #dde9ef;
+  --color-blush: #c06a5a;
+  --color-blush-soft: #f5ded6;
 
   /* type */
   --font-display: "Gilda Display", Georgia, serif;

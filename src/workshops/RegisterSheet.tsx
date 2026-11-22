@@ -57,7 +57,7 @@ export default function RegisterSheet({ workshop: w, open, onClose }: { workshop
   const [problem, setProblem] = useState('')
   const [duplicate, setDuplicate] = useState('')
   const ref = useDialog(open, onClose)
-  const body = useRef<HTMLDivElement>(null)
+  const body = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
     try {
@@ -67,9 +67,17 @@ export default function RegisterSheet({ workshop: w, open, onClose }: { workshop
     }
   }, [form, w.slug])
 
+  // each step starts at the top, with the cursor in its first empty field (not on phones: the keyboard would jump up)
   useEffect(() => {
     body.current?.scrollTo({ top: 0 })
-  }, [step])
+    if (!open || window.matchMedia('(pointer: coarse)').matches) return
+    const t = setTimeout(() => {
+      const fields = body.current?.querySelectorAll<HTMLInputElement>('input[type=text]:not([name=website]), input[type=email], input[type=tel]')
+      const first = [...(fields ?? [])].find((f) => !f.value) ?? fields?.[0]
+      first?.focus({ preventScroll: true })
+    }, 450)
+    return () => clearTimeout(t)
+  }, [step, open])
 
   const set = <K extends keyof Form>(key: K, value: Form[K]) => {
     setForm((f) => ({ ...f, [key]: value }))
@@ -88,7 +96,8 @@ export default function RegisterSheet({ workshop: w, open, onClose }: { workshop
     const found = stepErrors(step)
     setErrors(found)
     if (Object.keys(found).length) {
-      body.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
+      // after the messages render: bring the first one into view
+      setTimeout(() => body.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(), 0)
       return
     }
     setStep(step + 1)
@@ -176,7 +185,19 @@ export default function RegisterSheet({ workshop: w, open, onClose }: { workshop
           )}
         </header>
 
-        <div ref={body} className="flex-1 overflow-y-auto px-5 py-7 sm:px-8">
+        {/* a real form: Enter moves to the next step */}
+        <form
+          id="register-form"
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault()
+            if (duplicate) return
+            if (step < 3) next()
+            else submit()
+          }}
+          ref={body}
+          className="flex-1 overflow-y-auto px-5 py-7 sm:px-8"
+        >
           {duplicate ? (
             <div className="py-10 text-center">
               <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-tan text-terracotta">
@@ -212,7 +233,7 @@ export default function RegisterSheet({ workshop: w, open, onClose }: { workshop
               )}
             </>
           )}
-        </div>
+        </form>
 
         <footer className="flex items-center justify-between gap-3 border-t border-ink/10 bg-paper px-5 py-4 sm:px-8">
           {duplicate ? (
@@ -226,18 +247,15 @@ export default function RegisterSheet({ workshop: w, open, onClose }: { workshop
                   Back
                 </button>
               ) : (
-                <span className="text-xs text-muted">About 3 minutes</span>
+                <span className="flex items-center gap-1.5 text-xs leading-snug text-muted">
+                  <Icon name="clock" className="h-4 w-4 shrink-0" />
+                  About 2 minutes · {w.interest_only || w.fee_inr ? 'nothing to pay now' : 'free'}
+                </span>
               )}
-              {step < 3 ? (
-                <button type="button" onClick={next} className={`${PRIMARY} h-12 px-7`}>
-                  Continue
-                </button>
-              ) : (
-                <button type="button" onClick={submit} disabled={busy} className={`${PRIMARY} h-12 px-7`}>
-                  {busy && <Spinner className="h-4 w-4" />}
-                  {busy ? 'Sending' : submitLabel}
-                </button>
-              )}
+              <button type="submit" form="register-form" disabled={busy} className={`${PRIMARY} h-12 px-7`}>
+                {busy && <Spinner className="h-4 w-4" />}
+                {step < 3 ? 'Continue' : busy ? 'Sending' : submitLabel}
+              </button>
             </>
           )}
         </footer>
@@ -352,7 +370,7 @@ function StepPractical({ form, set, errors }: StepProps) {
 function StepReview({ form, set, errors, w, goTo }: StepProps & { w: Workshop; goTo: (step: number) => void }) {
   const full = w.seats_left === 0
   const next = w.interest_only
-    ? 'Nothing is charged now. You are added to the list, and as soon as registration opens we email you first and offer you a place, in the order people registered.'
+    ? 'Nothing is charged now. You are added to the list, and as soon as registration opens we email you and invite you to book before anyone else.'
     : full
     ? 'The workshop is full, so you will join the waitlist. If a place opens up, we will email you straight away.'
     : w.fee_inr

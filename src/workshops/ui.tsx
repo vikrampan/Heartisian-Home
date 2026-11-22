@@ -3,7 +3,7 @@ import Footer from '../site/components/Footer'
 import { LogoOnShade } from '../site/components/art'
 import { initials, onLinkClick, type Trainer } from './lib'
 
-// Pieces shared by the workshop pages: the page frame, the seat meter, trainer portraits and icons.
+// Pieces shared by the workshop pages: the page frame, trainer portraits and icons.
 
 export function Page({ children }: { children: ReactNode }) {
   return (
@@ -48,78 +48,7 @@ export function Page({ children }: { children: ReactNode }) {
   )
 }
 
-// Places drawn as earth blocks laid in courses (stretcher bond): laid blocks are taken, outlined ones are free.
-export function SeatMeter({
-  seats,
-  taken,
-  waitlist = 0,
-  size = 'md',
-  tone = 'light',
-}: {
-  seats: number
-  taken: number
-  waitlist?: number
-  size?: 'sm' | 'md'
-  tone?: 'light' | 'dark'
-}) {
-  // up to 40 blocks; beyond that each block stands for several places
-  const per = Math.max(1, Math.ceil(seats / 40))
-  const blocks = Math.ceil(seats / per)
-  const laid = Math.min(blocks, Math.round(taken / per))
-  const perCourse = blocks <= 12 ? blocks : Math.ceil(blocks / Math.ceil(blocks / 10))
-  const courses = Array.from({ length: Math.ceil(blocks / perCourse) }, (_, c) =>
-    Array.from({ length: Math.min(perCourse, blocks - c * perCourse) }, (_, i) => c * perCourse + i),
-  )
-  const left = Math.max(seats - taken, 0)
-  const brick = size === 'sm' ? 'h-[0.6rem] w-[1.15rem]' : 'h-3 w-[1.45rem] sm:w-6'
-  const half = size === 'sm' ? '0.65rem' : '0.82rem'
-  const dark = tone === 'dark'
-
-  return (
-    <div>
-      <div aria-hidden="true" className="inline-flex flex-col gap-[3px]">
-        {courses.map((course, c) => (
-          <div key={c} className="flex gap-[3px]" style={{ marginLeft: c % 2 ? half : 0 }}>
-            {course.map((i) => (
-              <span
-                key={i}
-                className={`${brick} rounded-[2px] ${
-                  i < laid
-                    ? 'bg-[linear-gradient(160deg,#c07a50,#9f5738_55%,#84452b)] shadow-[inset_0_-1px_0_rgb(0_0_0/0.25),inset_0_1px_0_rgb(255_255_255/0.2)]'
-                    : dark
-                      ? 'border border-dashed border-paper/40'
-                      : 'border border-dashed border-ink/30 bg-white/40'
-                }`}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-      <p className={`mt-2 text-sm ${dark ? 'text-paper/85' : 'text-muted'}`}>
-        {left > 0 ? (
-          <>
-            <span className={`font-semibold ${dark ? 'text-paper' : 'text-ink'}`}>
-              {left} {left === 1 ? 'place' : 'places'} left
-            </span>{' '}
-            · {taken} of {seats} blocks laid
-          </>
-        ) : (
-          <>
-            <span className={`font-semibold ${dark ? 'text-paper' : 'text-ink'}`}>All {seats} places taken</span>
-            {' · '}
-            {waitlist ? `${waitlist} on the waitlist` : 'waitlist open'}
-          </>
-        )}
-      </p>
-    </div>
-  )
-}
-
-const PORTRAIT_TONES = [
-  'bg-[radial-gradient(circle_at_30%_25%,#d8a679,#9f5738_70%)]',
-  'bg-[radial-gradient(circle_at_30%_25%,#b8b48f,#6f6a45_70%)]',
-  'bg-[radial-gradient(circle_at_30%_25%,#9fb3bf,#56768b_70%)]',
-]
+const PORTRAIT_TONES = ['bg-terracotta', 'bg-sage', 'bg-sky']
 
 // A trainer's photo, or their initials on an earth-toned disc until the photo arrives.
 export function Portrait({ trainer, index = 0, className = '' }: { trainer: Trainer; index?: number; className?: string }) {
@@ -136,7 +65,7 @@ export function Portrait({ trainer, index = 0, className = '' }: { trainer: Trai
   )
 }
 
-type IconName = 'calendar' | 'clock' | 'pin' | 'rupee' | 'people' | 'check' | 'copy' | 'close' | 'leaf' | 'bed' | 'shield' | 'tools' | 'phone'
+type IconName = 'calendar' | 'clock' | 'pin' | 'rupee' | 'people' | 'check' | 'copy' | 'close' | 'leaf' | 'bed' | 'shield' | 'tools' | 'phone' | 'plus' | 'share' | 'hourglass' | 'layers' | 'sun'
 
 const PATHS: Record<IconName, ReactNode> = {
   calendar: <path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h13A1.5 1.5 0 0 1 20 7.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5zM4 10h16M8.5 4v4M15.5 4v4" />,
@@ -152,6 +81,11 @@ const PATHS: Record<IconName, ReactNode> = {
   shield: <path d="M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6zM9 12l2 2 4-4" />,
   tools: <path d="M14.5 6.5l3 3M4 20l7.5-7.5M13 4.5a3.5 3.5 0 0 0 4.9 4.9L20 11.5l-3.5 3.5-2-2-5 5L4 12.5l5-5-2-2L10.5 2z" />,
   phone: <path d="M8 3h8a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM11 18h2" />,
+  plus: <path d="M12 5v14M5 12h14" />,
+  share: <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4M18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />,
+  hourglass: <path d="M6 3h12M6 21h12M7 3c0 5 10 5 10 9s-10 4-10 9M17 3c0 5-10 5-10 9s10 4 10 9" />,
+  layers: <path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5" />,
+  sun: <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />,
 }
 
 export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; className?: string }) {

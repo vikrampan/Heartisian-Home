@@ -1,5 +1,6 @@
 import TicketCard, { NoWorkshops } from './TicketCard'
 import { api, useLoad, useTitle, type Workshop } from './lib'
+import { PHOTOS } from './photos'
 import { Loading, Page } from './ui'
 
 export default function WorkshopsPage() {
@@ -21,19 +22,19 @@ export default function WorkshopsPage() {
               Hands-on workshops in earth and lime building: real materials, demonstrations and supervised practice, led
               by trainers who build this way every day.
             </p>
-            <p className="script mt-6 -rotate-2 text-[1.75rem] text-terracotta">Build · Belong · Evolve</p>
           </div>
-          <div className="relative">
+          <div className="grid grid-cols-5 gap-2">
             <img
-              src="/images/initiative/blocks-1024.webp"
-              srcSet="/images/initiative/blocks-640.webp 640w, /images/initiative/blocks-1024.webp 1024w"
-              sizes="(min-width: 1024px) 40vw, 100vw"
-              alt="Stacked compressed earth blocks in warm sunlight"
-              className="aspect-[4/3] w-full rounded-2xl object-cover object-[50%_30%] shadow-[0_30px_60px_-34px_rgb(43_38_32/0.7)] lg:aspect-[5/4]"
+              src={PHOTOS.houseBuild.src}
+              srcSet={PHOTOS.houseBuild.srcSet}
+              sizes="(min-width: 1024px) 30vw, 60vw"
+              alt={PHOTOS.houseBuild.alt}
+              className="col-span-3 aspect-[3/4] h-full w-full rounded-2xl object-cover object-[55%_50%]"
             />
-            <p className="absolute -bottom-5 left-5 rounded-full bg-paper px-5 py-2.5 text-sm font-semibold text-ink shadow-[0_12px_30px_-14px_rgb(43_38_32/0.6)]">
-              Kanha Shanti Vanam, Telangana
-            </p>
+            <div className="col-span-2 grid gap-2">
+              <img src={PHOTOS.handsBlocks.src} srcSet={PHOTOS.handsBlocks.srcSet} sizes="(min-width: 1024px) 20vw, 40vw" alt={PHOTOS.handsBlocks.alt} className="aspect-square h-full w-full rounded-2xl object-cover object-[55%_55%]" />
+              <img src={PHOTOS.team.src} srcSet={PHOTOS.team.srcSet} sizes="(min-width: 1024px) 20vw, 40vw" alt={PHOTOS.team.alt} className="aspect-square h-full w-full rounded-2xl object-cover object-[50%_40%]" />
+            </div>
           </div>
         </div>
       </section>

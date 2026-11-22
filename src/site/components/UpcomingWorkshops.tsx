@@ -1,23 +1,11 @@
-import { useEffect, useState } from 'react'
 import TicketCard from '../../workshops/TicketCard'
-import type { Workshop } from '../../workshops/lib'
+import { useWorkshops } from '../workshopsFeed'
 import Reveal from './Reveal'
 import SectionIntro from './SectionIntro'
 
 // The next workshops, between the craft and the film. Hidden until there is at least one to show.
 export default function UpcomingWorkshops() {
-  const [workshops, setWorkshops] = useState<Workshop[]>([])
-
-  useEffect(() => {
-    let live = true
-    fetch('/api/workshops')
-      .then((res) => (res.ok && res.headers.get('content-type')?.includes('json') ? (res.json() as Promise<Workshop[]>) : []))
-      .then((list) => live && Array.isArray(list) && setWorkshops(list.slice(0, 2)))
-      .catch(() => {})
-    return () => {
-      live = false
-    }
-  }, [])
+  const workshops = useWorkshops().slice(0, 2)
 
   return (
     <section id="workshops" aria-label="Upcoming workshops" className={workshops.length ? 'paper relative z-10 py-16 lg:py-24' : 'hidden'}>
