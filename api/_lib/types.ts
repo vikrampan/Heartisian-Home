@@ -55,6 +55,8 @@ export interface Workshop {
   safety_note: string
   schedule: Day[]
   trainers: Trainer[]
+  cover_url: string | null
+  registration_open: boolean
 }
 
 export type Status = 'held' | 'verifying' | 'confirmed' | 'waitlisted' | 'interested' | 'cancelled' | 'expired'

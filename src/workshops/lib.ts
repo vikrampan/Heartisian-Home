@@ -11,12 +11,10 @@ export interface Workshop extends ServerWorkshop {
   level: string
   format: string
   outcomes: string[]
-  cover_url: string | null
   registration_closes_at: string | null
   closes_at: string | null
   /** hours an unpaid place is kept, with the default from settings applied */
   hold_hours_effective: number
-  registration_open: boolean
   published_at: string | null
   created_at: string
 }

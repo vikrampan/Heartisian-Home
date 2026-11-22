@@ -65,7 +65,7 @@ export function Portrait({ trainer, index = 0, className = '' }: { trainer: Trai
   )
 }
 
-type IconName = 'calendar' | 'clock' | 'pin' | 'rupee' | 'people' | 'check' | 'copy' | 'close' | 'leaf' | 'bed' | 'shield' | 'tools' | 'phone' | 'plus' | 'share' | 'hourglass' | 'layers' | 'sun'
+type IconName = 'calendar' | 'clock' | 'pin' | 'rupee' | 'people' | 'check' | 'copy' | 'close' | 'leaf' | 'bed' | 'shield' | 'tools' | 'phone' | 'plus' | 'share' | 'hourglass' | 'layers' | 'sun' | 'mail' | 'link'
 
 const PATHS: Record<IconName, ReactNode> = {
   calendar: <path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h13A1.5 1.5 0 0 1 20 7.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5zM4 10h16M8.5 4v4M15.5 4v4" />,
@@ -85,6 +85,8 @@ const PATHS: Record<IconName, ReactNode> = {
   share: <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4M18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />,
   hourglass: <path d="M6 3h12M6 21h12M7 3c0 5 10 5 10 9s-10 4-10 9M17 3c0 5-10 5-10 9s10 4 10 9" />,
   layers: <path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5" />,
+  mail: <path d="M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5zM4.5 6.5l7.5 6 7.5-6" />,
+  link: <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.1 1.1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.1-1.1" />,
   sun: <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />,
 }
 

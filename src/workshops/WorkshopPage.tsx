@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import RegisterSheet from './RegisterSheet'
+import ShareLinks from './ShareLinks'
 import { availability, bookingSteps, callToAction, dayCount, startsIn } from './helpers'
 import { api, dateRange, feeLabel, onLinkClick, rupees, timings, useLoad, useTitle, type Trainer, type Workshop } from './lib'
 import { ACCENTS, GALLERY, PHOTOS, coverFor, sessionPhoto } from './photos'
@@ -47,10 +48,12 @@ export default function WorkshopPage({ slug }: { slug: string }) {
             {w.trainers.length > 0 && <Trainers trainers={w.trainers} />}
             <Practical w={w} />
             <Faq w={w} />
+            <ShareCard w={w} className="lg:hidden short:lg:block" />
           </div>
           <aside className="hidden lg:block">
-            <div className="sticky top-28">
+            <div className="sticky top-28 space-y-4">
               <BookingCard w={w} onRegister={register} variant="side" />
+              <ShareCard w={w} compact className="hidden tall:block" />
             </div>
           </aside>
         </div>
@@ -562,6 +565,19 @@ function Faq({ w }: { w: Workshop }) {
           </details>
         ))}
       </div>
+    </section>
+  )
+}
+
+// Below the questions on phones and short screens; under the booking card, in the sidebar, where there is room.
+function ShareCard({ w, compact = false, className = '' }: { w: Workshop; compact?: boolean; className?: string }) {
+  const url = `${window.location.origin}/workshops/${w.slug}`
+  const text = w.dates_tba ? `${w.title} · ${w.venue}` : `${w.title} · ${dateRange(w.starts_on, w.ends_on)} · ${w.venue}`
+  return (
+    <section aria-label="Share this workshop" className={`rounded-3xl bg-white/70 ring-1 ring-ink/8 ${compact ? 'p-5' : 'p-6'} ${className}`}>
+      <p className={`font-display text-ink ${compact ? 'text-lg' : 'text-xl'}`}>Share this workshop</p>
+      {!compact && <p className="mt-1 text-sm text-muted">Know someone who would love this? Send it their way.</p>}
+      <ShareLinks url={url} title={w.title} text={text} className={compact ? 'mt-3' : 'mt-4'} />
     </section>
   )
 }

@@ -1,3 +1,5 @@
+import { coverStill, type Still } from '../../api/_lib/covers.js'
+
 // Real photographs only: stills from the Heartisan Home film (public/images/workshops/, 800 and 1600 px wide).
 
 export interface Photo {
@@ -32,10 +34,19 @@ export const GALLERY: Photo[] = [PHOTOS.houseBuild, PHOTOS.handsBlocks, PHOTOS.t
 /** The lead photo for a workshop: its own cover if uploaded, otherwise a still that suits it. */
 export function coverFor(w: { slug: string; cover_url: string | null }): Photo {
   if (w.cover_url) return { src: w.cover_url, srcSet: '', alt: '', focus: '50% 50%' }
-  if (/programme|technician/.test(w.slug)) return PHOTOS.houseBuild
-  if (/introduction/.test(w.slug)) return PHOTOS.handsBlocks
-  const all = Object.values(PHOTOS)
-  return all[[...w.slug].reduce((n, c) => n + c.charCodeAt(0), 0) % all.length]
+  return BY_STILL[coverStill(w.slug)]
+}
+
+const BY_STILL: Record<Still, Photo> = {
+  'house-build': PHOTOS.houseBuild,
+  'hands-blocks': PHOTOS.handsBlocks,
+  'laying-block': PHOTOS.layingBlock,
+  'vault-scaffold': PHOTOS.vault,
+  crew: PHOTOS.crew,
+  team: PHOTOS.team,
+  aerial: PHOTOS.aerial,
+  'house-trees': PHOTOS.houseTrees,
+  carrying: PHOTOS.carrying,
 }
 
 // A photo for a schedule session, only where the film shows that very work.

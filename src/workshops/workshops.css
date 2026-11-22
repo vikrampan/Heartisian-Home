@@ -2,3 +2,6 @@
 @import "../site/index.css";
 @source "../workshops";
 
+/* screens tall enough for the booking card and the share box together in the sidebar */
+@custom-variant tall (@media (min-height: 760px));
+@custom-variant short (@media (max-height: 759.98px));

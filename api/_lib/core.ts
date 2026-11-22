@@ -1,6 +1,8 @@
 import { googleCalendarUrl, ics } from './calendar.js'
+import { coverStill, previewImage } from './covers.js'
 import { participantEmail, teamEmail, type ParticipantTemplate, type TeamTemplate } from './emails.js'
-import type { Registration, Settings } from './types.js'
+import { dateRange, escapeHtml, feeLabel } from './format.js'
+import type { Registration, Settings, Workshop } from './types.js'
 import { checkRegistration, str, type RegistrationForm } from './validate.js'
 
 // The five server routes. They check the request, call one database function (supabase/migrations), which holds
@@ -29,7 +31,7 @@ export interface Deps {
   cronAuthorized(req: Request): boolean
 }
 
-export type Route = 'workshops' | 'register' | 'booking' | 'admin' | 'cron'
+export type Route = 'workshops' | 'preview' | 'register' | 'booking' | 'admin' | 'cron'
 
 // ---- responses ----------------------------------------------------------------------------------------------
 
@@ -169,6 +171,82 @@ async function workshops(req: Request, deps: Deps) {
   const data = slug ? await deps.rpc('public_workshop', { slug }) : await deps.rpc('public_workshops')
   // places left change often, so the copy shared between visitors is kept for only a few seconds
   return json(data, 200, { 'cache-control': 'public, max-age=0, s-maxage=10, stale-while-revalidate=60' })
+}
+
+// ---- public: link previews ----------------------------------------------------------------------------------
+// WhatsApp, Facebook, LinkedIn and X don't run the site's JavaScript, so when someone shares a workshop link their
+// crawlers would only see the bare site. vercel.json sends those crawlers here instead, for a page that carries the
+// workshop's title, dates, venue and photo. People who open the link get the normal site.
+
+async function preview(req: Request, deps: Deps) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') throw new HttpError(405, 'Method not allowed')
+  const site = new URL(req.url).origin
+  const slug = new URL(req.url).searchParams.get('slug')
+  let w: Workshop | null = null
+  if (slug) {
+    try {
+      w = await deps.rpc<Workshop>('public_workshop', { slug })
+    } catch {
+      // unknown or unpublished: show the preview for the workshops page
+    }
+  }
+
+  const page = w
+    ? {
+        title: w.title,
+        description: [
+          [w.dates_tba ? '' : dateRange(w.starts_on, w.ends_on), w.venue, w.fee_tba ? '' : feeLabel(w)].filter(Boolean).join(' · ') + '.',
+          w.subtitle,
+          w.registration_open ? (w.interest_only ? 'Register your interest now.' : 'Registration is open.') : '',
+        ]
+          .filter(Boolean)
+          .join(' '),
+        url: `${site}/workshops/${w.slug}`,
+        image: w.cover_url || `${site}${previewImage(coverStill(w.slug))}`,
+        sized: !w.cover_url,
+      }
+    : {
+        title: 'Workshops at Kanha Shanti Vanam',
+        description: 'Hands-on workshops in earth and lime building: real materials, demonstrations and supervised practice, led by trainers who build this way every day.',
+        url: `${site}/workshops`,
+        image: `${site}${previewImage('house-build')}`,
+        sized: true,
+      }
+
+  const e = escapeHtml
+  const meta = (attr: 'property' | 'name', key: string, value: string) => `<meta ${attr}="${key}" content="${e(value)}" />`
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>${e(page.title)} — Heartisan Home</title>
+<link rel="canonical" href="${e(page.url)}" />
+${[
+  meta('name', 'description', page.description),
+  meta('property', 'og:type', 'website'),
+  meta('property', 'og:site_name', 'Heartisan Home'),
+  meta('property', 'og:locale', 'en_IN'),
+  meta('property', 'og:title', page.title),
+  meta('property', 'og:description', page.description),
+  meta('property', 'og:url', page.url),
+  meta('property', 'og:image', page.image),
+  ...(page.sized ? [meta('property', 'og:image:width', '1200'), meta('property', 'og:image:height', '630'), meta('property', 'og:image:type', 'image/jpeg')] : []),
+  meta('name', 'twitter:card', 'summary_large_image'),
+  meta('name', 'twitter:title', page.title),
+  meta('name', 'twitter:description', page.description),
+  meta('name', 'twitter:image', page.image),
+].join('\n')}
+</head>
+<body>
+<h1>${e(page.title)}</h1>
+<p>${e(page.description)}</p>
+<p><a href="${e(page.url)}">${e(page.url)}</a></p>
+</body>
+</html>
+`
+  return new Response(html, {
+    headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400' },
+  })
 }
 
 // ---- public: registration -----------------------------------------------------------------------------------
@@ -368,7 +446,7 @@ async function cron(req: Request, deps: Deps) {
 
 // ---- entry --------------------------------------------------------------------------------------------------
 
-const ROUTES: Record<Route, (req: Request, deps: Deps) => Promise<Response>> = { workshops, register, booking, admin, cron }
+const ROUTES: Record<Route, (req: Request, deps: Deps) => Promise<Response>> = { workshops, preview, register, booking, admin, cron }
 
 export async function handle(route: Route, req: Request, getDeps: () => Deps): Promise<Response> {
   try {

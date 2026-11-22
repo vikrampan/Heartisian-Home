@@ -10,7 +10,7 @@ function workshopsApi(): Plugin {
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         // only the routes; the browser also loads shared helpers from /api/_lib/ as source files
-        if (!/^\/api\/(workshops|register|booking|admin|cron|dev-login)(\?|\/?$)/.test(req.url ?? '')) return next()
+        if (!/^\/api\/(workshops|preview|register|booking|admin|cron|dev-login)(\?|\/?$)/.test(req.url ?? '')) return next()
         server
           .ssrLoadModule('/dev/api-dev.ts')
           .then((mod) => (mod as typeof import('./dev/api-dev.ts')).serve(req, res))

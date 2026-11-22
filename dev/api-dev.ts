@@ -83,7 +83,7 @@ export async function serve(req: IncomingMessage, res: ServerResponse) {
   }
 
   const route = url.pathname.replace(/^\/api\//, '').replace(/\/$/, '') as Route
-  if (!['workshops', 'register', 'booking', 'admin', 'cron'].includes(route)) {
+  if (!['workshops', 'preview', 'register', 'booking', 'admin', 'cron'].includes(route)) {
     res.statusCode = 404
     res.end('Not found')
     return

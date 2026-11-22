@@ -18,6 +18,7 @@ import {
   type Registration,
 } from './lib'
 import { paymentCode } from './helpers'
+import ShareLinks from './ShareLinks'
 import { coverFor } from './photos'
 import { Icon, Loading, Page, PRIMARY, Problem, SECONDARY, Spinner } from './ui'
 
@@ -476,33 +477,13 @@ function Progress({ r }: { r: Registration }) {
 
 /** Coming with a friend? The workshop's link, ready to send. */
 function Share({ r }: { r: Registration }) {
-  const [copied, setCopied] = useState(false)
   const url = `${window.location.origin}/workshops/${r.workshop.slug}`
-  const text = `I'm joining "${r.workshop.title}" at ${r.workshop.venue}. Come along? ${url}`
+  const text = `I'm joining "${r.workshop.title}" at ${r.workshop.venue}. Come along?`
   return (
     <div className="rounded-2xl bg-ochre-soft p-6">
       <p className="font-display text-xl text-ink">Coming with a friend?</p>
       <p className="mt-1.5 text-sm leading-relaxed text-muted">Building is better together. Send them the workshop.</p>
-      <div className="mt-4 flex flex-wrap gap-2">
-        <a href={`https://wa.me/?text=${encodeURIComponent(text)}`} target="_blank" rel="noopener noreferrer" className={`${PRIMARY} h-10 px-4 text-sm`}>
-          <Icon name="share" className="h-4 w-4" />
-          WhatsApp
-          <span className="sr-only">(opens in a new tab)</span>
-        </a>
-        <button
-          type="button"
-          onClick={() => {
-            navigator.clipboard?.writeText(url).then(() => {
-              setCopied(true)
-              setTimeout(() => setCopied(false), 2000)
-            })
-          }}
-          className={`${SECONDARY} h-10 px-4 text-sm`}
-        >
-          <Icon name={copied ? 'check' : 'copy'} className="h-4 w-4" />
-          {copied ? 'Link copied' : 'Copy link'}
-        </button>
-      </div>
+      <ShareLinks url={url} title={r.workshop.title} text={text} className="mt-4" />
     </div>
   )
 }
