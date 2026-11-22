@@ -1,5 +1,5 @@
 import { place } from './calendar.js'
-import { BACKGROUNDS, EXPERIENCE, dateRange, escapeHtml, firstName, moment, rupees, timings } from './format.js'
+import { BACKGROUNDS, EXPERIENCE, dateRange, escapeHtml, feeLabel, firstName, moment, rupees, timings } from './format.js'
 import type { Registration, Settings } from './types.js'
 
 // Every email the workshops send: to participants, and short alerts to the team.
@@ -17,6 +17,7 @@ export type ParticipantTemplate =
   | 'reminder'
   | 'workshop_cancelled'
   | 'booking_link'
+  | 'interested'
 
 export type TeamTemplate = 'team_registration' | 'team_payment' | 'team_cancelled'
 
@@ -61,6 +62,7 @@ function workshopFacts(c: EmailContext): [string, string][] {
     ['Dates', dateRange(w.starts_on, w.ends_on)],
     ...(timings(w.daily_start, w.daily_end) ? [['Timings', timings(w.daily_start, w.daily_end)] as [string, string]] : []),
     ['Venue', place(w)],
+    ['Fee', feeLabel(w)],
   ]
 }
 
@@ -209,6 +211,21 @@ function participantParts(t: ParticipantTemplate, c: EmailContext): Parts {
           ...(paid && reg.payment_reference ? ['If you have paid, our team will contact you about a refund.'] : []),
         ],
         button: { label: 'See upcoming workshops', url: `${c.site}/workshops` },
+      }
+    case 'interested':
+      return {
+        subject: `You're on the list: ${w.title}`,
+        eyebrow: 'Interest registered',
+        heading: `Thank you, ${firstName(reg.name)}. You're on the list`,
+        paragraphs: [
+          hi,
+          `Thank you for your interest in ${w.title}.`,
+          'As soon as registration opens, we will email you and offer you a place, in the order people registered. There is nothing to pay now.',
+          ...stay,
+        ],
+        facts: workshopFacts(c),
+        button: { label: 'View your registration', url: bookingUrl(c) },
+        after: [CAMPUS],
       }
     case 'booking_link':
       return {

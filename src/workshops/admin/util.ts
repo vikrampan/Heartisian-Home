@@ -17,6 +17,7 @@ export const REG_STATUS: Record<Registration['status'], [string, string]> = {
   held: ['Awaiting payment', 'bg-terracotta/12 text-terracotta'],
   verifying: ['Payment to check', 'bg-[#fbe2bd] text-[#7f4b00]'],
   waitlisted: ['Waitlist', 'bg-coast/15 text-coast'],
+  interested: ['Interested', 'bg-clay/25 text-[#7a4a26]'],
   cancelled: ['Cancelled', 'bg-ink/8 text-muted'],
   expired: ['Hold ended', 'bg-ink/8 text-muted'],
 }

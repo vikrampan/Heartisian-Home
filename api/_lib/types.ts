@@ -18,6 +18,8 @@ export interface Session {
 }
 
 export interface Day {
+  /** shown instead of "Day 1", e.g. "Modules 1–5" */
+  label?: string
   title: string
   sessions: Session[]
   outputs: string[]
@@ -41,6 +43,12 @@ export interface Workshop {
   seats_left: number
   waitlist: number
   fee_inr: number
+  /** the fee is shown as "to be announced" */
+  fee_tba: boolean
+  /** no dates yet: people register interest */
+  dates_tba: boolean
+  /** dates or fee not fixed yet: people register interest */
+  interest_only: boolean
   hold_hours: number | null
   provided: string[]
   bring: string[]
@@ -49,7 +57,7 @@ export interface Workshop {
   trainers: Trainer[]
 }
 
-export type Status = 'held' | 'verifying' | 'confirmed' | 'waitlisted' | 'cancelled' | 'expired'
+export type Status = 'held' | 'verifying' | 'confirmed' | 'waitlisted' | 'interested' | 'cancelled' | 'expired'
 
 export interface Registration {
   id: string
@@ -82,6 +90,7 @@ export interface Registration {
 export interface Settings {
   upi_id: string
   payee_name: string
+  upi_qr_url: string
   team_email: string
   reply_to: string
   default_hold_hours: number

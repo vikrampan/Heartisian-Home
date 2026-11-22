@@ -57,7 +57,7 @@ export async function admin<T>(action: string, payload: object = {}): Promise<T>
 }
 
 /** Uploads a photo, shrunk to at most 1600px wide, and returns its address. */
-export async function uploadPhoto(file: File, kind: 'cover' | 'trainer'): Promise<string> {
+export async function uploadPhoto(file: File, kind: 'cover' | 'trainer' | 'qr'): Promise<string> {
   const bitmap = await createImageBitmap(file)
   const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height))
   const canvas = document.createElement('canvas')

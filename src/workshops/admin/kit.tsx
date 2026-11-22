@@ -122,6 +122,7 @@ export function FillBar({ w }: { w: Workshop & { counts?: Partial<Record<Registr
         {c.verifying ? ` · ${c.verifying} to check` : ''}
         {c.held ? ` · ${c.held} awaiting payment` : ''} · {w.seats_left} of {w.seats} free
         {c.waitlisted ? ` · ${c.waitlisted} waiting` : ''}
+        {c.interested ? ` · ${c.interested} interested` : ''}
       </p>
     </div>
   )

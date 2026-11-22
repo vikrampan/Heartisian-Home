@@ -3,7 +3,7 @@ import type { Registration as ServerRegistration, Workshop as ServerWorkshop } f
 
 // Shared by the workshop pages and the admin: the data shapes, calls to /api, and a very small router.
 // The formatting and calendar helpers are the same files the server uses for emails.
-export { dateRange, clock, timings, moment, rupees, firstName, BACKGROUNDS, EXPERIENCE } from '../../api/_lib/format.js'
+export { dateRange, clock, timings, moment, rupees, feeLabel, firstName, BACKGROUNDS, EXPERIENCE } from '../../api/_lib/format.js'
 export { place } from '../../api/_lib/calendar.js'
 export type { Trainer, Day, Session, Status, Settings } from '../../api/_lib/types.js'
 
@@ -38,7 +38,7 @@ export interface Registration extends Omit<ServerRegistration, 'workshop'> {
 
 export interface BookingView {
   registration: Registration
-  payment: { upi_id: string; payee_name: string }
+  payment: { upi_id: string; payee_name: string; qr_url: string | null }
   contact_email: string | null
   calendar: string | null
 }

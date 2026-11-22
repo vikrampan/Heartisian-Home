@@ -19,7 +19,7 @@ export default function Overview() {
     ['Upcoming workshops', upcoming.length],
     ['Confirmed people', upcoming.reduce((n, w) => n + (w.counts.confirmed ?? 0), 0)],
     ['Payments to check', data.payments.length],
-    ['On waitlists', upcoming.reduce((n, w) => n + (w.counts.waitlisted ?? 0), 0)],
+    ['Interested or waiting', upcoming.reduce((n, w) => n + (w.counts.waitlisted ?? 0) + (w.counts.interested ?? 0), 0)],
   ]
 
   return (

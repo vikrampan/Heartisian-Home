@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { checkRegistration, type RegistrationForm } from '../../api/_lib/validate.js'
 import { useDialog } from '../site/hooks/useDialog'
-import { ApiError, BACKGROUNDS, EXPERIENCE, dateRange, navigate, post, rupees, type Workshop } from './lib'
+import { ApiError, BACKGROUNDS, EXPERIENCE, dateRange, feeLabel, navigate, post, rupees, type Workshop } from './lib'
 import { Icon, PRIMARY, SECONDARY, Spinner } from './ui'
 
 // Registration in four steps, in a sheet over the workshop page. What has been typed is kept for this browser tab,
@@ -122,7 +122,7 @@ export default function RegisterSheet({ workshop: w, open, onClose }: { workshop
   }
 
   const full = w.seats_left === 0
-  const submitLabel = full ? 'Join the waitlist' : w.fee_inr ? 'Reserve my place' : 'Confirm registration'
+  const submitLabel = w.interest_only ? 'Register my interest' : full ? 'Join the waitlist' : w.fee_inr ? 'Reserve my place' : 'Confirm registration'
 
   return (
     <div className={open ? '' : 'pointer-events-none'} aria-hidden={!open}>
@@ -146,7 +146,7 @@ export default function RegisterSheet({ workshop: w, open, onClose }: { workshop
               <p className="eyebrow text-clay">Register</p>
               <h2 id="register-title" className="mt-1.5 font-display text-[1.35rem] leading-snug">{w.title}</h2>
               <p className="mt-1 text-sm text-paper/75">
-                {dateRange(w.starts_on, w.ends_on)} · {w.fee_inr ? rupees(w.fee_inr) : 'Free'}
+                {dateRange(w.starts_on, w.ends_on)} · {feeLabel(w)}
               </p>
             </div>
             <button type="button" onClick={onClose} aria-label="Close" className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-paper/10">
@@ -351,7 +351,9 @@ function StepPractical({ form, set, errors }: StepProps) {
 
 function StepReview({ form, set, errors, w, goTo }: StepProps & { w: Workshop; goTo: (step: number) => void }) {
   const full = w.seats_left === 0
-  const next = full
+  const next = w.interest_only
+    ? 'Nothing is charged now. You are added to the list, and as soon as registration opens we email you first and offer you a place, in the order people registered.'
+    : full
     ? 'The workshop is full, so you will join the waitlist. If a place opens up, we will email you straight away.'
     : w.fee_inr
       ? `We will hold your place for ${w.hold_hours_effective} hours. Your booking page will show a UPI QR code for ${rupees(w.fee_inr)}; once you pay and send us the reference, we confirm your place by email.`

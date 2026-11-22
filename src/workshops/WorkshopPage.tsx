@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import RegisterSheet from './RegisterSheet'
 import { availability, callToAction } from './helpers'
-import { api, dateRange, onLinkClick, place, rupees, timings, useLoad, useTitle, type Trainer, type Workshop } from './lib'
+import { api, dateRange, feeLabel, onLinkClick, place, rupees, timings, useLoad, useTitle, type Trainer, type Workshop } from './lib'
 import { Icon, Loading, Page, Portrait, PRIMARY, Problem, SeatMeter } from './ui'
 
 export default function WorkshopPage({ slug }: { slug: string }) {
@@ -65,7 +65,7 @@ function Hero({ w, onRegister }: { w: Workshop; onRegister: () => void }) {
     { icon: 'calendar', text: dateRange(w.starts_on, w.ends_on) },
     ...(timings(w.daily_start, w.daily_end) ? [{ icon: 'clock' as const, text: timings(w.daily_start, w.daily_end) }] : []),
     { icon: 'pin', text: place(w) },
-    { icon: 'rupee', text: w.fee_inr ? `${rupees(w.fee_inr)} per person` : 'Free' },
+    { icon: 'rupee', text: w.fee_tba || !w.fee_inr ? feeLabel(w) : `${rupees(w.fee_inr)} per person` },
   ]
 
   return (
@@ -96,7 +96,14 @@ function Hero({ w, onRegister }: { w: Workshop; onRegister: () => void }) {
           </ul>
 
           <div ref={ctaRef} className="mt-9 rounded-2xl bg-white/55 p-5 ring-1 ring-ink/8 sm:p-6">
-            <SeatMeter seats={w.seats} taken={w.seats_taken} waitlist={w.waitlist} />
+            {w.interest_only ? (
+              <p className="text-sm text-muted">
+                <span className="font-semibold text-ink">{w.seats} places</span> · places will be offered in the order people
+                register
+              </p>
+            ) : (
+              <SeatMeter seats={w.seats} taken={w.seats_taken} waitlist={w.waitlist} />
+            )}
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
               <button type="button" onClick={onRegister} disabled={!w.registration_open} className={`${PRIMARY} h-14 shrink-0 whitespace-nowrap px-8 text-base`}>
                 {cta.label}
@@ -130,8 +137,8 @@ function Hero({ w, onRegister }: { w: Workshop; onRegister: () => void }) {
         >
           <div className="mx-auto flex max-w-xl items-center justify-between gap-4">
             <div className="min-w-0 text-sm">
-              <p className="font-semibold text-ink">{w.fee_inr ? rupees(w.fee_inr) : 'Free'}</p>
-              <p className="truncate text-muted">{w.seats_left ? `${w.seats_left} places left` : 'Waitlist open'}</p>
+              <p className="font-semibold text-ink">{feeLabel(w)}</p>
+              <p className="truncate text-muted">{w.interest_only ? 'Pay nothing now' : w.seats_left ? `${w.seats_left} places left` : 'Waitlist open'}</p>
             </div>
             <button type="button" onClick={onRegister} tabIndex={ctaVisible ? -1 : 0} className={`${PRIMARY} h-12 shrink-0 px-6`}>
               {cta.label}
@@ -183,7 +190,7 @@ function Schedule({ w }: { w: Workshop }) {
           {w.schedule.map((d, i) => (
             <article key={i} className="rounded-2xl bg-paper/[0.06] p-6 ring-1 ring-paper/10 sm:p-8">
               <header className="flex items-baseline gap-4 border-b border-paper/15 pb-5">
-                <span className="script text-[2.4rem] leading-none text-clay">Day {i + 1}</span>
+                <span className="script shrink-0 text-[2.4rem] leading-none text-clay">{d.label || `Day ${i + 1}`}</span>
                 <h3 className="font-display text-[1.45rem] leading-tight">{d.title}</h3>
               </header>
               <ol className="relative mt-6 space-y-6 before:absolute before:bottom-2 before:left-[0.9rem] before:top-2 before:w-px before:bg-paper/20">
@@ -281,9 +288,11 @@ function Practical({ w }: { w: Workshop }) {
     {
       icon: 'rupee',
       title: 'Fee & payment',
-      body: w.fee_inr
-        ? [`${rupees(w.fee_inr)} per person.`, `When you register, your place is held for ${w.hold_hours_effective} hours. Pay by UPI and send us the payment reference to confirm it.`]
-        : ['Free to attend. Your place is confirmed as soon as you register.'],
+      body: w.fee_tba
+        ? ['To be announced.', 'Register your interest now: there is nothing to pay yet. When the fee is set, we email you first and offer you a place.']
+        : w.fee_inr
+          ? [`${rupees(w.fee_inr)} per person.`, `When you register, your place is held for ${w.hold_hours_effective} hours. Pay by UPI and send us the payment reference to confirm it.`]
+          : ['Free to attend. Your place is confirmed as soon as you register.'],
     },
     {
       icon: 'bed',

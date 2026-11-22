@@ -53,6 +53,10 @@ export function moment(iso: string | null): string {
 
 export const rupees = (n: number) => `₹${n.toLocaleString('en-IN')}`
 
+/** "₹3,500", "Free" or "Fee to be announced" */
+export const feeLabel = (w: { fee_inr: number; fee_tba: boolean }) =>
+  w.fee_tba ? 'Fee to be announced' : w.fee_inr ? rupees(w.fee_inr) : 'Free'
+
 export const firstName = (name: string) => name.trim().split(/\s+/)[0] ?? name
 
 export function escapeHtml(s: string): string {

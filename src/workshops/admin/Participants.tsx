@@ -1,15 +1,16 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { paymentCode } from '../helpers'
-import { BACKGROUNDS, EXPERIENCE, dateRange, moment, rupees, useLoad, type ApiError, type Registration } from '../lib'
+import { BACKGROUNDS, EXPERIENCE, dateRange, feeLabel, moment, rupees, useLoad, type ApiError, type Registration } from '../lib'
 import { Spinner } from '../ui'
 import { Badge, Busy, Card, Drawer, FillBar, Link, Note, TextArea } from './kit'
 import { type AdminWorkshop, ago, BTN_DANGER, BTN_DARK, BTN_PLAIN, BTN_PRIMARY, REG_STATUS, regLabel } from './util'
 import { admin } from './session'
 
-type Filter = 'all' | 'confirmed' | 'verifying' | 'held' | 'waitlisted' | 'ended' | 'stay'
+type Filter = 'all' | 'interested' | 'confirmed' | 'verifying' | 'held' | 'waitlisted' | 'ended' | 'stay'
 
 const FILTERS: [Filter, string][] = [
   ['all', 'Everyone'],
+  ['interested', 'Interested'],
   ['confirmed', 'Confirmed'],
   ['verifying', 'Payment to check'],
   ['held', 'Awaiting payment'],
@@ -51,7 +52,7 @@ export default function Participants({ workshopId }: { workshopId: string }) {
           <div>
             <h1 className="font-display text-[1.9rem] leading-tight text-ink">{w.title}</h1>
             <p className="mt-1 text-sm text-muted">
-              {dateRange(w.starts_on, w.ends_on)} · {w.fee_inr ? rupees(w.fee_inr) : 'Free'} · {w.checked_in} checked in
+              {dateRange(w.starts_on, w.ends_on)} · {feeLabel(w)} · {w.checked_in} checked in
             </p>
           </div>
           <div className="flex gap-2">
@@ -60,6 +61,7 @@ export default function Participants({ workshopId }: { workshopId: string }) {
           </div>
         </div>
         <div className="mt-4 max-w-xl"><FillBar w={w} /></div>
+        <OfferAll w={w} waiting={data.registrations.filter((r) => r.status === 'interested' || r.status === 'waitlisted').length} onDone={reload} />
       </div>
 
       <Card>
@@ -152,7 +154,7 @@ export default function Participants({ workshopId }: { workshopId: string }) {
         )}
       </Card>
 
-      {openId && <Detail id={openId} seatsLeft={w.seats_left} onClose={() => setOpenId(null)} onChange={reload} />}
+      {openId && <Detail id={openId} seatsLeft={w.seats_left} ready={!w.interest_only} onClose={() => setOpenId(null)} onChange={reload} />}
     </div>
   )
 }
@@ -165,6 +167,7 @@ interface DetailData {
 
 const EVENT_WORDS: Record<string, string> = {
   registered: 'Registered',
+  interested: 'Registered interest',
   payment_submitted: 'Sent a payment reference',
   accepted_place: 'Accepted the offered place',
   cancelled: 'Cancelled',
@@ -179,7 +182,7 @@ const EVENT_WORDS: Record<string, string> = {
   workshop_cancelled: 'Workshop cancelled',
 }
 
-function Detail({ id, seatsLeft, onClose, onChange }: { id: string; seatsLeft: number; onClose: () => void; onChange: () => void }) {
+function Detail({ id, seatsLeft, ready, onClose, onChange }: { id: string; seatsLeft: number; ready: boolean; onClose: () => void; onChange: () => void }) {
   const { data, error, loading, set } = useLoad(`reg:${id}`, () => admin<DetailData>('registration', { id }))
   const [busy, setBusy] = useState('')
   const [problem, setProblem] = useState('')
@@ -247,12 +250,12 @@ function Detail({ id, seatsLeft, onClose, onChange }: { id: string; seatsLeft: n
                 </button>
               )}
               {r.status === 'held' && button(paid ? 'Confirm (payment received)' : 'Confirm place', 'confirm', BTN_PRIMARY)}
-              {r.status === 'waitlisted' && seatsLeft > 0 && button('Offer a place', 'offer_place', BTN_PRIMARY)}
-              {['cancelled', 'expired'].includes(r.status) && seatsLeft > 0 && button('Offer the place again', 'offer_place', BTN_PRIMARY)}
-              {['waitlisted', 'cancelled', 'expired'].includes(r.status) && seatsLeft > 0 && button('Confirm directly', 'confirm')}
+              {(r.status === 'waitlisted' || r.status === 'interested') && ready && seatsLeft > 0 && button('Offer a place', 'offer_place', BTN_PRIMARY)}
+              {['cancelled', 'expired'].includes(r.status) && ready && seatsLeft > 0 && button('Offer the place again', 'offer_place', BTN_PRIMARY)}
+              {['waitlisted', 'interested', 'cancelled', 'expired'].includes(r.status) && ready && seatsLeft > 0 && button('Confirm directly', 'confirm')}
               {r.status === 'confirmed' && !r.checked_in_at && button('Check in', 'check_in', BTN_PRIMARY)}
               {r.status === 'confirmed' && r.checked_in_at && button('Undo check-in', 'undo_check_in')}
-              {['held', 'verifying', 'confirmed', 'waitlisted'].includes(r.status) && (
+              {['held', 'verifying', 'confirmed', 'waitlisted', 'interested'].includes(r.status) && (
                 <button type="button" onClick={() => setReason({ act: 'cancel', text: '' })} className={BTN_DANGER}>
                   Cancel registration
                 </button>
@@ -260,6 +263,7 @@ function Detail({ id, seatsLeft, onClose, onChange }: { id: string; seatsLeft: n
               {button('Resend latest email', 'resend_email')}
             </div>
             {r.status === 'waitlisted' && seatsLeft === 0 && <p className="mt-2 text-xs text-muted">No place is free right now. When one frees up, you can offer it here.</p>}
+            {r.status === 'interested' && !ready && <p className="mt-2 text-xs text-muted">Once the workshop's dates and fee are set, offer places from here, or to everyone at once from the top of this page.</p>}
             {reason && (
               <div className="mt-4 space-y-2 rounded-lg bg-paper/70 p-3">
                 <label className="block text-sm font-semibold text-ink" htmlFor="reason">
@@ -384,3 +388,48 @@ function downloadCsv(w: AdminWorkshop, regs: Registration[]) {
   a.click()
   URL.revokeObjectURL(a.href)
 }
+
+// Once the dates and fee are set: offer the free places to everyone interested or waiting, oldest first.
+function OfferAll({ w, waiting, onDone }: { w: AdminWorkshop; waiting: number; onDone: () => void }) {
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null)
+  if (!waiting) return null
+  if (w.interest_only) {
+    return (
+      <p className="mt-4 rounded-xl bg-clay/15 px-4 py-3 text-sm text-ink">
+        <strong>{waiting}</strong> {waiting === 1 ? 'person has' : 'people have'} registered interest. Once{' '}
+        {w.dates_tba ? 'the dates are set (Edit workshop)' : w.fee_tba ? 'the fee is set (Edit workshop)' : 'your UPI ID is added (Settings)'}, you can
+        offer them places from here.
+      </p>
+    )
+  }
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl bg-clay/15 px-4 py-3">
+      <p className="text-sm text-ink">
+        <strong>{waiting}</strong> interested or waiting · {w.seats_left} {w.seats_left === 1 ? 'place' : 'places'} free
+      </p>
+      <button
+        type="button"
+        disabled={busy || w.seats_left === 0}
+        onClick={async () => {
+          if (!window.confirm(`Offer places to up to ${Math.min(waiting, w.seats_left)} people, oldest registration first? Each gets an email${w.fee_inr ? ' asking them to pay' : ' to confirm'}.`)) return
+          setBusy(true)
+          try {
+            const { offered } = await admin<{ offered: number }>('offer_all', { workshop_id: w.id })
+            setMessage({ tone: 'ok', text: `${offered} ${offered === 1 ? 'place' : 'places'} offered and emailed.` })
+            onDone()
+          } catch (e) {
+            setMessage({ tone: 'error', text: (e as ApiError).message })
+          } finally {
+            setBusy(false)
+          }
+        }}
+        className={BTN_PRIMARY}
+      >
+        {busy && <Spinner className="h-4 w-4" />} Offer places to everyone waiting
+      </button>
+      {message && <Note tone={message.tone}>{message.text}</Note>}
+    </div>
+  )
+}
+

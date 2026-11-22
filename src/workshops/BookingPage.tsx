@@ -3,6 +3,7 @@ import {
   ApiError,
   api,
   dateRange,
+  feeLabel,
   firstName,
   isTouch,
   moment,
@@ -53,7 +54,7 @@ export default function BookingPage({ token, fresh }: { token: string; fresh: bo
             </div>
             <aside className="space-y-6">
               <Help view={data} />
-              {['held', 'verifying', 'confirmed', 'waitlisted'].includes(data.registration.status) && <Cancel r={data.registration} act={act} />}
+              {['held', 'verifying', 'confirmed', 'waitlisted', 'interested'].includes(data.registration.status) && <Cancel r={data.registration} act={act} />}
             </aside>
           </div>
         </div>
@@ -73,6 +74,13 @@ function statusCopy(r: Registration) {
         : { stamp: 'Place offered', tone: 'text-terracotta border-terracotta', heading: 'A place is waiting for you', text: `Please confirm it by ${moment(r.hold_until)}, or it goes to the next person waiting.` }
     case 'verifying':
       return { stamp: 'Checking', tone: 'text-coast border-coast', heading: "We're checking your payment", text: `Thank you. We have your payment reference ${r.payment_reference ?? ''}, and will confirm your place by email once it is matched, usually within a day.` }
+    case 'interested':
+      return {
+        stamp: 'On the list',
+        tone: 'text-[#7a4a26] border-[#7a4a26]',
+        heading: "You're on the list",
+        text: "Thank you for your interest. As soon as registration opens, we'll email you and offer you a place, in the order people registered. There is nothing to pay now.",
+      }
     case 'waitlisted':
       return { stamp: `Waitlist #${r.waitlist_position ?? ''}`, tone: 'text-coast border-coast', heading: "You're on the waitlist", text: 'The workshop is full right now. If a place opens up, we will email you straight away.' }
     case 'cancelled':
@@ -136,7 +144,10 @@ function Pay({ view, act }: { view: BookingView; act: (a: 'pay', ref: string) =>
   const [problem, setProblem] = useState('')
   const left = useCountdown(r.hold_until)
 
+  const ownQr = view.payment.qr_url
+
   useEffect(() => {
+    if (ownQr) return
     let live = true
     import('qrcode')
       .then((QR) => QR.toDataURL(upi, { margin: 1, width: 480, errorCorrectionLevel: 'M', color: { dark: '#2b2620', light: '#ffffff' } }))
@@ -144,7 +155,7 @@ function Pay({ view, act }: { view: BookingView; act: (a: 'pay', ref: string) =>
     return () => {
       live = false
     }
-  }, [upi])
+  }, [upi, ownQr])
 
   async function send(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -167,10 +178,24 @@ function Pay({ view, act }: { view: BookingView; act: (a: 'pay', ref: string) =>
       </div>
       <div className="grid gap-6 p-5 sm:grid-cols-[13rem_1fr] sm:p-7">
         <div className="mx-auto w-full max-w-[13rem]">
-          <div className="aspect-square rounded-xl bg-white p-2 ring-1 ring-ink/10">
-            {qr ? <img src={qr} alt={`UPI QR code to pay ${rupees(r.amount_inr)} to ${view.payment.payee_name}`} className="h-full w-full" /> : <div className="flex h-full items-center justify-center text-muted"><Spinner /></div>}
-          </div>
-          <p className="mt-2 text-center text-xs text-muted">Scan with any UPI app</p>
+          {ownQr ? (
+            <>
+              <img src={ownQr} alt={`UPI QR code to pay ${view.payment.payee_name} (${view.payment.upi_id})`} className="w-full rounded-xl ring-1 ring-ink/10" />
+              <p className="mt-2 text-center text-xs leading-snug text-muted">
+                Scan with any UPI app and enter <strong className="text-ink">{rupees(r.amount_inr)}</strong>
+              </p>
+              <a href={ownQr} download="heartisan-home-upi-qr" target="_blank" rel="noopener noreferrer" className="mt-1 block text-center text-xs font-semibold text-terracotta hover:underline">
+                Save the QR to scan from your gallery
+              </a>
+            </>
+          ) : (
+            <>
+              <div className="aspect-square rounded-xl bg-white p-2 ring-1 ring-ink/10">
+                {qr ? <img src={qr} alt={`UPI QR code to pay ${rupees(r.amount_inr)} to ${view.payment.payee_name}`} className="h-full w-full" /> : <div className="flex h-full items-center justify-center text-muted"><Spinner /></div>}
+              </div>
+              <p className="mt-2 text-center text-xs text-muted">Scan with any UPI app</p>
+            </>
+          )}
         </div>
         <div className="space-y-4">
           {isTouch() && (
@@ -210,7 +235,7 @@ function Pay({ view, act }: { view: BookingView; act: (a: 'pay', ref: string) =>
             <div>
               <dt className="text-xs uppercase tracking-[0.1em] text-muted">Payment note</dt>
               <dd className="mt-0.5 font-semibold text-ink">
-                {code} <span className="font-normal text-muted">(filled in when you scan)</span>
+                {code} <span className="font-normal text-muted">{ownQr ? '(add it as the note if your app allows)' : '(filled in when you scan)'}</span>
               </dd>
             </div>
           </dl>
@@ -303,7 +328,7 @@ function Details({ r }: { r: Registration }) {
     ['Dates', dateRange(w.starts_on, w.ends_on)],
     ['Timings', timings(w.daily_start, w.daily_end)],
     ['Venue', place(w)],
-    ['Fee', r.amount_inr ? rupees(r.amount_inr) : 'Free'],
+    ['Fee', r.status === 'interested' ? feeLabel(w) : r.amount_inr ? rupees(r.amount_inr) : 'Free'],
     ['Registered as', `${r.name} · ${r.email} · ${r.phone}`],
   ]
   return (
@@ -357,7 +382,7 @@ function Cancel({ r, act }: { r: Registration; act: (a: 'cancel') => Promise<voi
     <div className="rounded-2xl p-6 ring-1 ring-ink/10">
       <p className="font-semibold text-ink">Can't come any more?</p>
       <p className="mt-1 text-sm leading-relaxed text-muted">
-        {r.status === 'waitlisted' ? 'You can leave the waitlist at any time.' : 'Please let us know, so your place can go to someone waiting.'}
+        {r.status === 'waitlisted' || r.status === 'interested' ? 'You can leave the list at any time.' : 'Please let us know, so your place can go to someone waiting.'}
         {paid && ' Our team will contact you about your payment.'}
       </p>
       {asking ? (
@@ -387,7 +412,7 @@ function Cancel({ r, act }: { r: Registration; act: (a: 'cancel') => Promise<voi
         </div>
       ) : (
         <button type="button" onClick={() => setAsking(true)} className="mt-4 text-sm font-semibold text-terracotta underline-offset-4 hover:underline">
-          {r.status === 'waitlisted' ? 'Leave the waitlist' : 'Cancel my registration'}
+          {r.status === 'waitlisted' || r.status === 'interested' ? 'Leave the list' : 'Cancel my registration'}
         </button>
       )}
       {problem && <p role="alert" className="mt-3 text-sm text-terracotta">{problem}</p>}

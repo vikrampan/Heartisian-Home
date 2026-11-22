@@ -24,6 +24,7 @@ interface Form {
   venue_address: string
   seats: string
   fee_inr: string
+  fee_tba: boolean
   hold_hours: string
   outcomes: string[]
   schedule: Day[]
@@ -50,6 +51,7 @@ const BLANK: Form = {
   venue_address: 'Kanha Shanti Vanam, Telangana',
   seats: '20',
   fee_inr: '0',
+  fee_tba: false,
   hold_hours: '',
   outcomes: [],
   schedule: [],
@@ -85,6 +87,7 @@ function fromWorkshop(w: AdminWorkshop): Form {
     venue_address: w.venue_address,
     seats: String(w.seats),
     fee_inr: String(w.fee_inr),
+    fee_tba: w.fee_tba,
     hold_hours: w.hold_hours ? String(w.hold_hours) : '',
     outcomes: w.outcomes,
     schedule: w.schedule,
@@ -147,6 +150,7 @@ export default function WorkshopEditor({ id }: { id?: string }) {
         provided: clean(form.provided),
         bring: clean(form.bring),
         schedule: form.schedule.map((d) => ({
+          ...(d.label?.trim() ? { label: d.label.trim() } : {}),
           title: d.title.trim(),
           sessions: d.sessions.filter((s) => s.title.trim()),
           outputs: clean(d.outputs),
@@ -240,6 +244,10 @@ export default function WorkshopEditor({ id }: { id?: string }) {
       </Card>
 
       <Card title="Dates & place">
+        <p className="-mt-2 mb-4 text-sm text-muted">
+          Leave the days empty to publish with "Dates to be announced": people then register their interest, and you offer
+          them places once the dates are set.
+        </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Field label="First day">
             <Input type="date" value={form.starts_on} onChange={(e) => set('starts_on', e.target.value)} />
@@ -270,8 +278,12 @@ export default function WorkshopEditor({ id }: { id?: string }) {
           <Field label="Places">
             <Input type="number" min={1} max={500} value={form.seats} onChange={(e) => set('seats', e.target.value)} />
           </Field>
-          <Field label="Fee per person (₹)" hint={Number(form.fee_inr) ? `${rupees(Number(form.fee_inr))}, paid by UPI and confirmed by you` : 'Free: places are confirmed straight away'}>
-            <Input type="number" min={0} step={50} value={form.fee_inr} onChange={(e) => set('fee_inr', e.target.value)} />
+          <Field label="Fee per person (₹)" hint={form.fee_tba ? 'Shown as "Fee to be announced"; people register their interest' : Number(form.fee_inr) ? `${rupees(Number(form.fee_inr))}, paid by UPI and confirmed by you` : 'Free: places are confirmed straight away'}>
+            <Input type="number" min={0} step={50} value={form.fee_inr} disabled={form.fee_tba} onChange={(e) => set('fee_inr', e.target.value)} />
+            <span className="mt-2 flex items-center gap-2 text-sm text-ink">
+              <input type="checkbox" checked={form.fee_tba} onChange={(e) => set('fee_tba', e.target.checked)} className="h-4 w-4 accent-[#9f5738]" />
+              Fee to be announced
+            </span>
           </Field>
           <Field label="Hold an unpaid place for (hours)" hint="Leave empty to use the default in Settings.">
             <Input type="number" min={1} max={336} value={form.hold_hours} onChange={(e) => set('hold_hours', e.target.value)} />
@@ -409,7 +421,10 @@ function ScheduleEditor({ days, onChange }: { days: Day[]; onChange: (d: Day[]) 
         {days.map((d, i) => (
           <div key={i} className="rounded-xl bg-paper/70 p-4 ring-1 ring-ink/8">
             <div className="flex flex-wrap items-end gap-3">
-              <Field label={`Day ${i + 1} title`} className="min-w-[14rem] flex-1">
+              <Field label="Label" hint={`Shown instead of "Day ${i + 1}"`} className="w-40">
+                <Input value={d.label ?? ''} placeholder={`Day ${i + 1}`} onChange={(e) => update(i, { ...d, label: e.target.value })} />
+              </Field>
+              <Field label="Title" className="min-w-[14rem] flex-1">
                 <Input value={d.title} onChange={(e) => update(i, { ...d, title: e.target.value })} />
               </Field>
               <button type="button" onClick={() => window.confirm(`Remove day ${i + 1}?`) && onChange(days.filter((_, j) => j !== i))} className={BTN_DANGER}>

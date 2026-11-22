@@ -3,7 +3,7 @@ import { useLoad, type ApiError, type Settings as SettingsData } from '../lib'
 import { Spinner } from '../ui'
 import { Busy, Card, Field, Input, Note } from './kit'
 import { BTN_PLAIN, BTN_PRIMARY } from './util'
-import { admin } from './session'
+import { admin, uploadPhoto } from './session'
 
 export default function Settings({ email }: { email: string }) {
   const settings = useLoad('settings', () => admin<SettingsData>('settings'))
@@ -30,6 +30,37 @@ export default function Settings({ email }: { email: string }) {
           <Field label="Name shown for the payment">
             <Input value={form.payee_name} onChange={(e) => set('payee_name', e.target.value)} />
           </Field>
+          <div>
+            <p className="mb-1 text-sm font-semibold text-ink">Your UPI QR code (optional)</p>
+            <div className="flex items-start gap-3">
+              {form.upi_qr_url && <img src={form.upi_qr_url} alt="Your UPI QR code" className="h-28 w-auto rounded-lg ring-1 ring-ink/10" />}
+              <div className="space-y-2">
+                <label className={`${BTN_PLAIN} cursor-pointer`}>
+                  {form.upi_qr_url ? 'Replace QR' : 'Upload QR'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      try {
+                        set('upi_qr_url', await uploadPhoto(file, 'qr'))
+                      } catch (err) {
+                        setMessage({ tone: 'error', text: (err as Error).message })
+                      }
+                    }}
+                  />
+                </label>
+                {form.upi_qr_url && (
+                  <button type="button" onClick={() => set('upi_qr_url', '')} className="block text-sm font-semibold text-terracotta hover:underline">
+                    Remove (draw one from the UPI ID instead)
+                  </button>
+                )}
+              </div>
+            </div>
+            <p className="mt-1 text-xs leading-snug text-muted">Shown on booking pages. It must pay the UPI ID above. Save settings after uploading.</p>
+          </div>
           <Field label="Hold an unpaid place for (hours)" hint="Default for every paid workshop; each workshop can change it.">
             <Input type="number" min={1} max={336} value={form.default_hold_hours} onChange={(e) => set('default_hold_hours', Number(e.target.value))} />
           </Field>

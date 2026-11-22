@@ -61,11 +61,12 @@ const ERRORS: Record<string, [number, string]> = {
   already_confirmed: [409, 'This person is already confirmed.'],
   no_place_free: [409, 'There is no free place. Free one up, or add a place to the workshop, first.'],
   not_verifying: [409, 'There is no payment waiting to be checked.'],
-  cannot_offer: [409, 'A place can only be offered to someone waiting, cancelled or whose hold ended.'],
+  cannot_offer: [409, 'A place can only be offered to someone interested, waiting, cancelled or whose hold ended.'],
   not_confirmed: [409, 'Only confirmed people can be checked in.'],
   seats_below_taken: [409, 'There are already more places in use than that. Cancel some first, or keep more places.'],
-  dates_missing: [409, 'Add the dates before publishing.'],
-  upi_not_set: [409, 'Add your UPI ID in Settings before publishing a paid workshop.'],
+  dates_missing: [409, 'Set the workshop dates first.'],
+  fee_missing: [409, 'Set the fee first (untick "Fee to be announced"), then offer places.'],
+  upi_not_set: [409, 'Add your UPI ID in Settings first, so people can pay.'],
   invalid_status: [400, 'Unknown workshop status.'],
   cannot_remove_self: [409, 'You cannot remove yourself.'],
   trainer_not_found: [404, 'That trainer no longer exists.'],
@@ -154,6 +155,7 @@ const EMAIL_FOR_STATUS: Record<Registration['status'], (r: Registration) => Part
   confirmed: () => 'confirmed',
   held: () => 'held',
   waitlisted: () => 'waitlisted',
+  interested: () => 'interested',
   verifying: () => 'payment_received',
   cancelled: () => 'cancelled',
   expired: () => 'hold_expired',
@@ -198,7 +200,7 @@ async function register(req: Request, deps: Deps) {
 
 interface BookingView {
   registration: Registration
-  payment: { upi_id: string; payee_name: string }
+  payment: { upi_id: string; payee_name: string; qr_url: string | null }
   contact_email: string | null
   expired: Registration[]
 }
@@ -327,6 +329,14 @@ async function admin(req: Request, deps: Deps) {
     return json(await deps.rpc('admin_registration', { id: result.registration.id }))
   }
 
+  if (action === 'offer_all') {
+    const result = await deps.rpc<{ offered: Registration[]; expired: Registration[] }>('admin_offer_all', p)
+    const s = await settings(deps)
+    await mailExpired(deps, site, s, result.expired)
+    for (const reg of result.offered) await mail(deps, site, s, reg, 'place_offered')
+    return json({ offered: result.offered.length })
+  }
+
   if (action === 'resend_email') {
     const { registration: reg } = await deps.rpc<{ registration: Registration }>('admin_registration', p)
     const template = reg.status === 'held' && reg.amount_inr === 0 ? 'place_offered' : EMAIL_FOR_STATUS[reg.status](reg)
@@ -335,7 +345,7 @@ async function admin(req: Request, deps: Deps) {
   }
 
   if (action === 'upload_target') {
-    const kind = payload.kind === 'trainer' ? 'trainers' : 'covers'
+    const kind = payload.kind === 'trainer' ? 'trainers' : payload.kind === 'qr' ? 'payments' : 'covers'
     const ext = String(payload.ext ?? 'webp').replace(/[^a-z0-9]/g, '').slice(0, 5) || 'webp'
     return json(await deps.uploadTarget(`${kind}/${crypto.randomUUID()}.${ext}`))
   }

@@ -1,5 +1,5 @@
 import { availability, dateParts } from './helpers'
-import { onLinkClick, rupees, timings, trainerNames, type Workshop } from './lib'
+import { feeLabel, onLinkClick, timings, trainerNames, type Workshop } from './lib'
 import { Icon, Portrait, PRIMARY, SeatMeter } from './ui'
 
 export default function TicketCard({ w }: { w: Workshop }) {
@@ -17,8 +17,18 @@ export default function TicketCard({ w }: { w: Workshop }) {
           <p className="mt-1.5 text-sm text-paper/75">{date.weekdays}</p>
         </div>
         <div className="text-right md:text-left">
-          <p className="font-display text-2xl leading-none md:text-[1.75rem]">{w.fee_inr ? rupees(w.fee_inr) : 'Free'}</p>
-          <p className="mt-1 text-xs uppercase tracking-[0.14em] text-paper/65">{w.fee_inr ? 'per person' : 'to attend'}</p>
+          {w.fee_tba ? (
+            <p className="text-sm leading-snug text-paper/85">
+              Fee to be
+              <br />
+              announced
+            </p>
+          ) : (
+            <>
+              <p className="font-display text-2xl leading-none md:text-[1.75rem]">{feeLabel(w)}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-paper/65">{w.fee_inr ? 'per person' : 'to attend'}</p>
+            </>
+          )}
         </div>
         {/* notches cut by the perforation */}
         <span aria-hidden="true" className="absolute -bottom-3 -left-3 h-6 w-6 rounded-full bg-paper md:-right-3 md:-top-3 md:bottom-auto md:left-auto" />
@@ -68,9 +78,15 @@ export default function TicketCard({ w }: { w: Workshop }) {
         )}
 
         <div className="mt-6 flex flex-col gap-5 border-t border-ink/10 pt-5 sm:flex-row sm:items-end sm:justify-between">
-          <SeatMeter seats={w.seats} taken={w.seats_taken} waitlist={w.waitlist} size="sm" />
+          {w.interest_only ? (
+            <p className="text-sm text-muted">
+              <span className="font-semibold text-ink">{w.seats} places</span> · register now, pay nothing yet
+            </p>
+          ) : (
+            <SeatMeter seats={w.seats} taken={w.seats_taken} waitlist={w.waitlist} size="sm" />
+          )}
           <a href={url} onClick={onLinkClick} className={`${PRIMARY} h-12 shrink-0 px-6 text-[0.9375rem]`}>
-            {w.registration_open ? (w.seats_left ? 'Details & registration' : 'Details & waitlist') : 'View details'}
+            {!w.registration_open ? 'View details' : w.interest_only ? 'Details & register interest' : w.seats_left ? 'Details & registration' : 'Details & waitlist'}
           </a>
         </div>
       </div>
