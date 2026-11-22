@@ -857,3 +857,10 @@ end $$;
 
 revoke all on public.settings, public.admins, public.trainers, public.workshops, public.workshop_trainers,
   public.registrations, public.registration_events, public.email_log from anon, authenticated;
+revoke all on sequence public.registration_events_id_seq, public.email_log_id_seq from anon, authenticated;
+
+-- the server's role, granted explicitly rather than relying on the project's defaults
+grant usage on schema public to service_role;
+grant select, insert, update, delete on public.settings, public.admins, public.trainers, public.workshops,
+  public.workshop_trainers, public.registrations, public.registration_events, public.email_log to service_role;
+grant usage, select on sequence public.registration_events_id_seq, public.email_log_id_seq to service_role;
