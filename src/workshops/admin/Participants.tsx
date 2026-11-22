@@ -93,7 +93,28 @@ export default function Participants({ workshopId }: { workshopId: string }) {
         {rows.length === 0 ? (
           <p className="py-10 text-center text-muted">{data.registrations.length ? 'Nobody matches.' : 'No registrations yet.'}</p>
         ) : (
-          <div className="mt-4 overflow-x-auto">
+          <>
+          {/* phones: one card per person */}
+          <ul className="mt-4 divide-y divide-ink/8 md:hidden">
+            {rows.map((r) => (
+              <li key={r.id}>
+                <button type="button" onClick={() => setOpenId(r.id)} className="flex w-full items-start justify-between gap-3 py-3 text-left">
+                  <span className="min-w-0">
+                    <span className="block font-semibold text-ink">
+                      {r.name}
+                      {r.checked_in_at && <span className="ml-1.5 text-xs font-normal text-[#46542a]">✓ here</span>}
+                    </span>
+                    <span className="block truncate text-xs text-muted">{r.email}</span>
+                    <span className="mt-1 block text-xs text-muted">
+                      {r.phone} · {r.city} · {ago(r.created_at)}
+                    </span>
+                  </span>
+                  <Badge label={r.status === 'waitlisted' ? `Waitlist #${r.waitlist_position}` : regLabel(r)} tone={REG_STATUS[r.status][1]} />
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 hidden overflow-x-auto md:block">
             <table className="w-full min-w-[46rem] text-left text-sm">
               <thead className="border-b border-ink/10 text-xs uppercase tracking-[0.08em] text-muted">
                 <tr>
@@ -127,6 +148,7 @@ export default function Participants({ workshopId }: { workshopId: string }) {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </Card>
 
