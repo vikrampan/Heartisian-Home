@@ -1,6 +1,10 @@
 @import "tailwindcss" source(none);
 @source "../site";
 @source "../shared";
+/* the home page shows the next workshops with the same ticket cards as /workshops */
+@source "../workshops/TicketCard.tsx";
+@source "../workshops/ui.tsx";
+@source "../workshops/helpers.ts";
 
 /* a phone held sideways: the film takes the whole screen */
 @custom-variant phone-landscape {

@@ -5,6 +5,7 @@ import Hero from './components/Hero'
 import InitiativeSection from './components/InitiativeSection'
 import CraftSection from './components/CraftSection'
 import StorySection from './components/StorySection'
+import UpcomingWorkshops from './components/UpcomingWorkshops'
 import DifferenceSection from './components/DifferenceSection'
 import KSVSection from './components/KSVSection'
 import JourneySection from './components/JourneySection'
@@ -42,6 +43,7 @@ export default function App() {
         <Hero onPlayVideo={openVideo} />
         <InitiativeSection />
         <CraftSection />
+        <UpcomingWorkshops />
         <StorySection onPlayVideo={openVideo} />
         <DifferenceSection />
         <KSVSection />

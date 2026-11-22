@@ -57,13 +57,13 @@ export default function Header({ activeNav, menuOpen, onMenuOpen }: HeaderProps)
         </a>
 
         <nav aria-label="Primary" className="hidden xl:block">
-          <ul className="flex items-center gap-8 2xl:gap-10">
+          <ul className="flex items-center gap-6 2xl:gap-9">
             {NAV.map((item, index) => (
               <li key={item.href}>
                 <a
                   href={item.href}
                   aria-current={activeNav === index ? 'true' : undefined}
-                  className="relative py-2 text-[0.9375rem] text-paper/90 transition-colors hover:text-paper after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100 aria-[current=true]:text-paper aria-[current=true]:after:scale-x-100"
+                  className="relative whitespace-nowrap py-2 text-[0.9375rem] text-paper/90 transition-colors hover:text-paper after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100 aria-[current=true]:text-paper aria-[current=true]:after:scale-x-100"
                 >
                   {item.label}
                 </a>
@@ -72,7 +72,7 @@ export default function Header({ activeNav, menuOpen, onMenuOpen }: HeaderProps)
           </ul>
         </nav>
 
-        <Button href="#footer" variant="light" className="hidden h-11 rounded-full px-6 xl:inline-flex">
+        <Button href="#footer" variant="light" className="hidden h-11 shrink-0 whitespace-nowrap rounded-full px-6 xl:inline-flex">
           Get Involved
         </Button>
 

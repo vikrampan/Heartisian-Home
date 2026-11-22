@@ -11,9 +11,14 @@ const basic = requested ? requested === 'basic' : BASIC_HOSTS.includes(window.lo
 
 const root = createRoot(document.getElementById('root')!)
 
+// Workshops, private booking pages and the admin are their own pages on either address.
+const workshops = /^\/(workshops|booking|admin)(\/|$)/.test(window.location.pathname)
+
 // Two separate import() calls on purpose: the production build attaches each page's stylesheet to its own call,
 // and folding them into one expression (`basic ? import(a) : import(b)`) made both pages load the full site's styles.
-if (basic) {
+if (workshops) {
+  import('./workshops/main').then(({ mount }) => mount(root))
+} else if (basic) {
   import('./basic/main').then(({ mount }) => mount(root))
 } else {
   import('./site/main').then(({ mount }) => mount(root))

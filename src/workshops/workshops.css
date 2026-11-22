@@ -1,0 +1,3 @@
+/* The workshop pages and the admin share the site's colours, type and textures. */
+@import "../site/index.css";
+@source "../workshops";

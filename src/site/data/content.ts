@@ -5,6 +5,8 @@ export const NAV = [
   { label: 'KSV', footerLabel: 'Kanha Shanti Vanam', href: '#ksv' },
   { label: 'Our Vision', footerLabel: 'Our Vision', href: '#difference' },
   { label: 'The Journey', footerLabel: 'The Journey', href: '#journey' },
+  // its own page, with registration
+  { label: 'Workshops', footerLabel: 'Workshops', href: '/workshops' },
   { label: 'Contact', footerLabel: 'Contact', href: '#footer' },
 ] as const
 
@@ -13,13 +15,14 @@ export const SECTIONS = [
   { id: 'hero', nav: 0 },
   { id: 'initiative', nav: 1 },
   { id: 'craft', nav: 2 },
+  { id: 'workshops', nav: 6 },
   { id: 'story', nav: 2 },
   { id: 'difference', nav: 4 },
   { id: 'ksv', nav: 3 },
   { id: 'journey', nav: 5 },
   { id: 'people', nav: 5 },
   { id: 'build', nav: 5 },
-  { id: 'footer', nav: 6 },
+  { id: 'footer', nav: 7 },
 ] as const
 
 export const SECTION_IDS = SECTIONS.map((section) => section.id)

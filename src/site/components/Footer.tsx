@@ -8,7 +8,8 @@ import { NAV } from '../data/content'
 // Desktop: the footer is 2.6:1 and the photo is cropped top and bottom, which moves the bands
 // to 0–23.7% / 27.3–76.3% / 76.3–100%.
 
-export default function Footer() {
+// `linkBase` is '/' on the workshop pages, so the section links lead back to the home page.
+export default function Footer({ linkBase = '' }: { linkBase?: string }) {
   const year = new Date().getFullYear()
 
   return (
@@ -74,7 +75,7 @@ export default function Footer() {
                       </span>
                     )}
                     <a
-                      href={item.href}
+                      href={item.href.startsWith('#') ? `${linkBase}${item.href}` : item.href}
                       className="relative py-1 text-[0.8125rem] font-semibold uppercase tracking-[0.16em] transition-colors hover:text-white after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100 lg:text-[clamp(0.8125rem,1vw,0.9375rem)]"
                     >
                       {item.footerLabel}

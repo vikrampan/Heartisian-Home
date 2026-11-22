@@ -14,7 +14,8 @@ export default function Logo({ sizeClassName }: LogoProps) {
           Heartisan <br className="md:hidden" />
           Home
         </span>
-        <span className="hidden text-[0.6875rem] leading-tight opacity-80 md:block">
+        {/* tablets and very wide screens; between those the menu needs the room */}
+        <span className="hidden text-[0.6875rem] leading-tight opacity-80 md:block xl:hidden 2xl:block">
           Building with Earth. Learning with the Heart.
         </span>
       </span>

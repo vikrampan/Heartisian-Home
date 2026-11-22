@@ -29,3 +29,7 @@ public/images/*_files/
 *.njsproj
 *.sln
 *.sw?
+
+# Local workshops database and saved emails (npm run dev without Supabase keys)
+.dev-db/
+.dev-mail/
